@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'colors.dart';
 
 // ignore: must_be_immutable
@@ -11,20 +10,18 @@ class CustomCard extends StatefulWidget {
     required this.customColor,
     required this.customImage,
     required this.customButtonColor,
-    required this.fruitName,
-    required this.fruitUnit,
-    required this.fruitPrice,
+    required this.charName,
+    required this.charVision,
+    required this.charNation,
   }) : super(key: key);
 
   double height;
   Color customColor;
   String customImage;
   Color customButtonColor;
-  IconData? plusIcon = FontAwesomeIcons.plus;
-  IconData? checkIcon = FontAwesomeIcons.check;
-  String fruitName;
-  String fruitUnit;
-  String fruitPrice;
+  String charName;
+  String charVision;
+  String charNation;
 
   @override
   State<CustomCard> createState() => _CustomCardState();
@@ -58,22 +55,18 @@ class _CustomCardState extends State<CustomCard> {
               const SizedBox(
                 width: 20.0,
               ),
-              Text(
-                widget.fruitName,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.mainTextColor,
+              Flexible(
+                  child: Container(
+                padding: const EdgeInsets.only(right: 13.0),
+                child: Text(
+                  widget.charName,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.mainTextColor,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              FaIcon(
-                FontAwesomeIcons.ellipsisVertical,
-                color: widget.customButtonColor,
-                size: 20.0,
-              ),
+              )),
               const SizedBox(
                 width: 20.0,
               ),
@@ -87,7 +80,7 @@ class _CustomCardState extends State<CustomCard> {
               left: 20.0,
             ),
             child: Text(
-              widget.fruitUnit,
+              widget.charVision,
               style: TextStyle(
                 fontSize: 14.0,
                 color: AppColor.mainTextColor,
@@ -102,7 +95,7 @@ class _CustomCardState extends State<CustomCard> {
               left: 20.0,
             ),
             child: Text(
-              widget.fruitPrice,
+              widget.charNation,
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -114,52 +107,18 @@ class _CustomCardState extends State<CustomCard> {
             height: 10.0,
           ),
           Center(
-            child: Image.network(
-              widget.customImage,
-              width: 140,
-            ),
+            child: Image.network(widget.customImage, width: 140,
+                loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                );
+              }
+            }),
           ),
-          // const SizedBox(
-          //   height: 10.0,
-          // ),
-          // Expanded(
-          //   child: Align(
-          //     alignment: Alignment.bottomRight,
-          //     child: GestureDetector(
-          //       onTap: () {
-          //         setState(() {
-          //           selectedContainerColor = widget.customButtonColor;
-          //           selectedIcon = widget.checkIcon;
-          //           selectedIconColor = widget.customColor;
-          //         });
-          //       },
-          //       child: Container(
-          //         width: 50.0,
-          //         height: 40.0,
-          //         decoration: BoxDecoration(
-          //           color: selectedContainerColor == widget.customButtonColor
-          //               ? widget.customButtonColor
-          //               : widget.customColor,
-          //           borderRadius: const BorderRadius.only(
-          //             topLeft: Radius.circular(
-          //               30.0,
-          //             ),
-          //             bottomRight: Radius.circular(15.0),
-          //           ),
-          //         ),
-          //         child: Icon(
-          //           selectedIcon == widget.checkIcon
-          //               ? widget.checkIcon
-          //               : widget.plusIcon,
-          //           size: 15.0,
-          //           color: selectedIconColor == widget.customColor
-          //               ? widget.customColor
-          //               : widget.customButtonColor,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
