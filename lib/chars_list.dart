@@ -137,113 +137,103 @@ class _CharsList extends State<CharsList> {
       return list.map((e) => CharModel.fromJson(e)).toList();
     }
 
-    return Container(
-      child: Center(
-        child: FutureBuilder(
-          future: readJsonData(),
-          builder: (context, snapshot) {
-            // var chars_data = json.decode(snapshot.data.toString())["items"];
-            if (snapshot.data != null) {
-              charsData = snapshot.data as List<CharModel>;
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)),
-              );
-            }
-
-            if ((filter.isEmpty)) {
-              _filteredList = charsData;
-            }
-
-            return MasonryGridView.count(
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              crossAxisCount: value,
-              itemCount: charsData == null ? 0 : _filteredList.length,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              itemBuilder: (context, index) {
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CharsDetail(
-                                      name:
-                                          _filteredList[index].name.toString(),
-                                      vision: _filteredList[index]
-                                          .vision
-                                          .toString(),
-                                      weapon: _filteredList[index]
-                                          .weapon
-                                          .toString(),
-                                      nation: _filteredList[index]
-                                          .nation
-                                          .toString(),
-                                      affiliation: _filteredList[index]
-                                          .affiliation
-                                          .toString(),
-                                      rarity: _filteredList[index].rarity!,
-                                      constellation: _filteredList[index]
-                                          .constellation
-                                          .toString(),
-                                      birthday: _filteredList[index]
-                                          .birthday
-                                          .toString(),
-                                      description: _filteredList[index]
-                                          .description
-                                          .toString(),
-                                      obtain: _filteredList[index]
-                                          .obtain
-                                          .toString(),
-                                      gender: _filteredList[index]
-                                          .gender
-                                          .toString(),
-                                      imagePortrait: _filteredList[index]
-                                          .image_portrait
-                                          .toString(),
-                                      imageCard: _filteredList[index]
-                                          .image_card
-                                          .toString(),
-                                      imageWish: _filteredList[index]
-                                          .image_wish
-                                          .toString(),
-                                      backgroundColor:
-                                          _filteredList[index].rarity == 5
-                                              ? AppColor.rarity5
-                                              : AppColor.rarity4)));
-                        },
-                        child: CustomCard(
-                          height:
-                              _filteredList[index].name.toString().length > 14
-                                  ? 270
-                                  : 250,
-                          customColor: _filteredList[index].rarity == 5
-                              ? AppColor.rarity5
-                              : AppColor.rarity4,
-                          customImage:
-                              _filteredList[index].image_portrait.toString(),
-                          customButtonColor: AppColor.peachButtonColor,
-                          charName: _filteredList[index].name.toString(),
-                          charVision: _filteredList[index].vision.toString(),
-                          charNation: _filteredList[index].nation.toString(),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
+    return Center(
+      child: FutureBuilder(
+        future: readJsonData(),
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            charsData = snapshot.data as List<CharModel>;
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)),
             );
-          },
-        ),
+          }
+
+          if ((filter.isEmpty)) {
+            _filteredList = charsData;
+          }
+
+          return MasonryGridView.count(
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            crossAxisCount: value,
+            itemCount: charsData == null ? 0 : _filteredList.length,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            itemBuilder: (context, index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CharsDetail(
+                                    name: _filteredList[index].name.toString(),
+                                    vision:
+                                        _filteredList[index].vision.toString(),
+                                    weapon:
+                                        _filteredList[index].weapon.toString(),
+                                    nation:
+                                        _filteredList[index].nation.toString(),
+                                    affiliation: _filteredList[index]
+                                        .affiliation
+                                        .toString(),
+                                    rarity: _filteredList[index].rarity!,
+                                    constellation: _filteredList[index]
+                                        .constellation
+                                        .toString(),
+                                    birthday: _filteredList[index]
+                                        .birthday
+                                        .toString(),
+                                    description: _filteredList[index]
+                                        .description
+                                        .toString(),
+                                    obtain:
+                                        _filteredList[index].obtain.toString(),
+                                    gender:
+                                        _filteredList[index].gender.toString(),
+                                    imagePortrait: _filteredList[index]
+                                        .image_portrait
+                                        .toString(),
+                                    imageCard: _filteredList[index]
+                                        .image_card
+                                        .toString(),
+                                    imageWish: _filteredList[index]
+                                        .image_wish
+                                        .toString(),
+                                    backgroundColor:
+                                        _filteredList[index].rarity == 5
+                                            ? AppColor.rarity5
+                                            : AppColor.rarity4)));
+                      },
+                      child: CustomCard(
+                        height: _filteredList[index].name.toString().length > 14
+                            ? 270
+                            : 250,
+                        customColor: _filteredList[index].rarity == 5
+                            ? AppColor.rarity5
+                            : AppColor.rarity4,
+                        customImage:
+                            _filteredList[index].image_portrait.toString(),
+                        customButtonColor: AppColor.peachButtonColor,
+                        charName: _filteredList[index].name.toString(),
+                        charVision: _filteredList[index].vision.toString(),
+                        charNation: _filteredList[index].nation.toString(),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
