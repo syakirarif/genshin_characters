@@ -128,8 +128,8 @@ class _CharsList extends State<CharsList> {
   Widget _generateContainer(int value) {
     Future<List<CharModel>> readJsonData() async {
       //read json file
-      final jsondata = await rootBundle.rootBundle
-          .loadString('data_repo/characters_list.json');
+      final jsondata =
+          await rootBundle.rootBundle.loadString('assets/characters_list.json');
       //decode json data as list
       final list = json.decode(jsondata) as List<dynamic>;
 
