@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' as rootBundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:genshin_characters/model/char_model.dart';
 
 import 'chars_detail.dart';
 import 'colors.dart';
@@ -17,19 +19,101 @@ class CharsList extends StatefulWidget {
 }
 
 class _CharsList extends State<CharsList> {
-  late List data;
+  Widget appBarTitle = const Text("Genshin Characters",
+      style: TextStyle(color: Colors.blue, fontSize: 22.0));
+  Icon actionIcon = const Icon(Icons.search, color: Colors.blue);
+
+  TextEditingController controller = TextEditingController();
+
+  List<CharModel> charsData = [];
+  List<CharModel> _filteredList = [];
+
+  String filter = "";
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      if (controller.text.isEmpty) {
+        setState(() {
+          filter = "";
+          _filteredList = charsData;
+        });
+      } else {
+        setState(() {
+          filter = controller.text;
+        });
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final appTopAppBar = AppBar(
+      elevation: 0.1,
+      backgroundColor: Colors.white,
+      title: appBarTitle,
+      actions: <Widget>[
+        IconButton(
+          icon: actionIcon,
+          onPressed: () {
+            setState(() {
+              if (actionIcon.icon == Icons.search) {
+                actionIcon = const Icon(
+                  Icons.close,
+                  color: Colors.redAccent,
+                );
+                appBarTitle = TextField(
+                  controller: controller,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: Colors.blue),
+                    hintText: "Search Name...",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 20.0),
+                  ),
+                  style: const TextStyle(color: Colors.blue, fontSize: 20.0),
+                  autofocus: true,
+                  cursorColor: Colors.black,
+                );
+              } else {
+                actionIcon = const Icon(
+                  Icons.search,
+                  color: Colors.blue,
+                );
+                appBarTitle = const Text("Genshin Characters",
+                    style: TextStyle(color: Colors.blue, fontSize: 22.0));
+                _filteredList = charsData;
+                controller.clear();
+              }
+            });
+          },
+        ),
+      ],
+    );
+
+    if ((filter.isNotEmpty)) {
+      List<CharModel> tmpListChar = <CharModel>[];
+      for (int i = 0; i < _filteredList.length; i++) {
+        if (_filteredList[i]
+            .name!
+            .toLowerCase()
+            .contains(filter.toLowerCase())) {
+          tmpListChar.add(_filteredList[i]);
+        }
+      }
+      _filteredList = tmpListChar;
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text("Genshin Characters",
-            style: TextStyle(color: Colors.blue, fontSize: 22.0)),
-      ),
+      appBar: appTopAppBar,
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          if(constraints.maxWidth < 600) {
+          if (constraints.maxWidth < 600) {
             return _generateContainer(2);
           } else if (constraints.maxWidth < 900) {
             return _generateContainer(4);
@@ -42,21 +126,39 @@ class _CharsList extends State<CharsList> {
   }
 
   Widget _generateContainer(int value) {
+    Future<List<CharModel>> readJsonData() async {
+      //read json file
+      final jsondata = await rootBundle.rootBundle
+          .loadString('data_repo/characters_list.json');
+      //decode json data as list
+      final list = json.decode(jsondata) as List<dynamic>;
+
+      //map json and initialize using DataModel
+      return list.map((e) => CharModel.fromJson(e)).toList();
+    }
+
     return Container(
       child: Center(
         child: FutureBuilder(
-          future: DefaultAssetBundle.of(context)
-              .loadString('data_repo/characters_list.json'),
+          future: readJsonData(),
           builder: (context, snapshot) {
-            var new_data = json.decode(snapshot.data.toString());
+            // var chars_data = json.decode(snapshot.data.toString())["items"];
+            if (snapshot.data != null) {
+              charsData = snapshot.data as List<CharModel>;
+            } else {
+              return const CircularProgressIndicator();
+            }
+
+            if ((filter.isEmpty)) {
+              _filteredList = charsData;
+            }
 
             return MasonryGridView.count(
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,
               crossAxisCount: value,
-              itemCount: new_data == null ? 0 : new_data.length,
-              padding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              itemCount: charsData == null ? 0 : _filteredList.length,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               itemBuilder: (context, index) {
                 return Card(
                   shape: RoundedRectangleBorder(
@@ -72,42 +174,64 @@ class _CharsList extends State<CharsList> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CharsDetail(
-                                      name: new_data[index]['name'],
-                                      vision: new_data[index]['vision'],
-                                      weapon: new_data[index]['weapon'],
-                                      nation: new_data[index]['nation'],
-                                      affiliation: new_data[index]
-                                      ['affiliation'],
-                                      rarity: new_data[index]['rarity'],
-                                      constellation: new_data[index]
-                                      ['constellation'],
-                                      birthday: new_data[index]['birthday'],
-                                      description: new_data[index]
-                                      ['description'],
-                                      obtain: new_data[index]['obtain'],
-                                      gender: new_data[index]['gender'],
-                                      imagePortrait: new_data[index]
-                                      ['image_portrait'],
-                                      imageCard: new_data[index]
-                                      ['image_card'],
-                                      imageWish: new_data[index]
-                                      ['image_wish'],
+                                      name:
+                                          _filteredList[index].name.toString(),
+                                      vision: _filteredList[index]
+                                          .vision
+                                          .toString(),
+                                      weapon: _filteredList[index]
+                                          .weapon
+                                          .toString(),
+                                      nation: _filteredList[index]
+                                          .nation
+                                          .toString(),
+                                      affiliation: _filteredList[index]
+                                          .affiliation
+                                          .toString(),
+                                      rarity: _filteredList[index].rarity!,
+                                      constellation: _filteredList[index]
+                                          .constellation
+                                          .toString(),
+                                      birthday: _filteredList[index]
+                                          .birthday
+                                          .toString(),
+                                      description: _filteredList[index]
+                                          .description
+                                          .toString(),
+                                      obtain: _filteredList[index]
+                                          .obtain
+                                          .toString(),
+                                      gender: _filteredList[index]
+                                          .gender
+                                          .toString(),
+                                      imagePortrait: _filteredList[index]
+                                          .image_portrait
+                                          .toString(),
+                                      imageCard: _filteredList[index]
+                                          .image_card
+                                          .toString(),
+                                      imageWish: _filteredList[index]
+                                          .image_wish
+                                          .toString(),
                                       backgroundColor:
-                                      new_data[index]['rarity'] == 5
-                                          ? AppColor.rarity5
-                                          : AppColor.rarity4)));
+                                          _filteredList[index].rarity == 5
+                                              ? AppColor.rarity5
+                                              : AppColor.rarity4)));
                         },
                         child: CustomCard(
                           height:
-                          new_data[index]['name'].length > 14 ? 270 : 250,
-                          customColor: new_data[index]['rarity'] == 5
+                              _filteredList[index].name.toString().length > 14
+                                  ? 270
+                                  : 250,
+                          customColor: _filteredList[index].rarity == 5
                               ? AppColor.rarity5
                               : AppColor.rarity4,
-                          customImage: new_data[index]['image_portrait'],
+                          customImage:
+                              _filteredList[index].image_portrait.toString(),
                           customButtonColor: AppColor.peachButtonColor,
-                          charName: new_data[index]['name'],
-                          charVision: new_data[index]['vision'],
-                          charNation: new_data[index]['nation'],
+                          charName: _filteredList[index].name.toString(),
+                          charVision: _filteredList[index].vision.toString(),
+                          charNation: _filteredList[index].nation.toString(),
                         ),
                       )
                     ],
