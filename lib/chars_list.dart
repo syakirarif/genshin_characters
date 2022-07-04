@@ -146,7 +146,10 @@ class _CharsList extends State<CharsList> {
             if (snapshot.data != null) {
               charsData = snapshot.data as List<CharModel>;
             } else {
-              return const CircularProgressIndicator();
+              return const Center(
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)),
+              );
             }
 
             if ((filter.isEmpty)) {
