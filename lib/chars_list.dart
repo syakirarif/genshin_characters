@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' as rootBundle;
+import 'package:flutter/services.dart' as root_bundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:genshin_characters/model/char_model.dart';
 
+import 'chars_card.dart';
 import 'chars_detail.dart';
 import 'colors.dart';
-import 'custom_card.dart';
 
 class CharsList extends StatefulWidget {
   const CharsList({
@@ -128,8 +128,8 @@ class _CharsList extends State<CharsList> {
   Widget _generateContainer(int value) {
     Future<List<CharModel>> readJsonData() async {
       //read json file
-      final jsondata =
-          await rootBundle.rootBundle.loadString('assets/characters_list.json');
+      final jsondata = await root_bundle.rootBundle
+          .loadString('assets/characters_list.json');
       //decode json data as list
       final list = json.decode(jsondata) as List<dynamic>;
 
@@ -158,7 +158,7 @@ class _CharsList extends State<CharsList> {
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             crossAxisCount: value,
-            itemCount: charsData == null ? 0 : _filteredList.length,
+            itemCount: _filteredList.length,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             itemBuilder: (context, index) {
               return Card(
@@ -200,20 +200,20 @@ class _CharsList extends State<CharsList> {
                                     gender:
                                         _filteredList[index].gender.toString(),
                                     imagePortrait: _filteredList[index]
-                                        .image_portrait
+                                        .imagePortrait
                                         .toString(),
                                     imageCard: _filteredList[index]
-                                        .image_card
+                                        .imageCard
                                         .toString(),
                                     imageWish: _filteredList[index]
-                                        .image_wish
+                                        .imageWish
                                         .toString(),
                                     backgroundColor:
                                         _filteredList[index].rarity == 5
                                             ? AppColor.rarity5
                                             : AppColor.rarity4)));
                       },
-                      child: CustomCard(
+                      child: CharsCard(
                         height: _filteredList[index].name.toString().length > 14
                             ? 270
                             : 250,
@@ -221,7 +221,7 @@ class _CharsList extends State<CharsList> {
                             ? AppColor.rarity5
                             : AppColor.rarity4,
                         customImage:
-                            _filteredList[index].image_portrait.toString(),
+                            _filteredList[index].imagePortrait.toString(),
                         customButtonColor: AppColor.peachButtonColor,
                         charName: _filteredList[index].name.toString(),
                         charVision: _filteredList[index].vision.toString(),

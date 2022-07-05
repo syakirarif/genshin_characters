@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
-// ignore: must_be_immutable
-class CustomCard extends StatefulWidget {
-  CustomCard({
+class CharsCard extends StatelessWidget {
+  const CharsCard({
     Key? key,
     required this.height,
     required this.customColor,
@@ -15,22 +14,13 @@ class CustomCard extends StatefulWidget {
     required this.charNation,
   }) : super(key: key);
 
-  double height;
-  Color customColor;
-  String customImage;
-  Color customButtonColor;
-  String charName;
-  String charVision;
-  String charNation;
-
-  @override
-  State<CustomCard> createState() => _CustomCardState();
-}
-
-class _CustomCardState extends State<CustomCard> {
-  Color? selectedContainerColor;
-  IconData? selectedIcon;
-  Color? selectedIconColor;
+  final double height;
+  final Color customColor;
+  final String customImage;
+  final Color customButtonColor;
+  final String charName;
+  final String charVision;
+  final String charNation;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +29,12 @@ class _CustomCardState extends State<CustomCard> {
         top: 20.0,
       ),
       width: 170.0,
-      height: widget.height,
+      height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
           15.0,
         ),
-        color: widget.customColor,
+        color: customColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +49,7 @@ class _CustomCardState extends State<CustomCard> {
                   child: Container(
                 padding: const EdgeInsets.only(right: 13.0),
                 child: Text(
-                  widget.charName,
+                  charName,
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -80,7 +70,7 @@ class _CustomCardState extends State<CustomCard> {
               left: 20.0,
             ),
             child: Text(
-              widget.charVision,
+              charVision,
               style: TextStyle(
                 fontSize: 14.0,
                 color: AppColor.mainTextColor,
@@ -95,7 +85,7 @@ class _CustomCardState extends State<CustomCard> {
               left: 20.0,
             ),
             child: Text(
-              widget.charNation,
+              charNation,
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -107,7 +97,7 @@ class _CustomCardState extends State<CustomCard> {
             height: 10.0,
           ),
           Center(
-            child: Image.network(widget.customImage, width: 140,
+            child: Image.network(customImage, width: 140,
                 loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) {
                 return child;

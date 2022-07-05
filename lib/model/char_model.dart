@@ -11,9 +11,9 @@ class CharModel {
   String? description;
   String? obtain;
   String? gender;
-  String? image_portrait;
-  String? image_card;
-  String? image_wish;
+  String? imagePortrait;
+  String? imageCard;
+  String? imageWish;
 
   //constructor
   CharModel({
@@ -29,9 +29,9 @@ class CharModel {
     this.description,
     this.obtain,
     this.gender,
-    this.image_portrait,
-    this.image_card,
-    this.image_wish,
+    this.imagePortrait,
+    this.imageCard,
+    this.imageWish,
   });
 
   //mapping data
@@ -48,8 +48,8 @@ class CharModel {
     description = json["description"];
     obtain = json["obtain"];
     gender = json["gender"];
-    image_portrait = json["image_portrait"];
-    image_card = json["image_card"];
-    image_wish = json["image_wish"];
+    imagePortrait = json["image_portrait"];
+    imageCard = json["image_card"];
+    imageWish = json["image_wish"];
   }
 }
