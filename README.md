@@ -1,7 +1,7 @@
 # genshin_characters
 
 An app that shows list and details of all characters in Genshin Impact.
-Besides, you also can to search specific character's name.
+Besides, you also able to search specific character's name.
 This app was made to be my material while learning Flutter Development. 
 This app also proposed to by my submission file in the online course entitled "Belajar Membuat Aplikasi Flutter untuk Pemula" at Dicoding.com
 
@@ -15,8 +15,7 @@ This app also proposed to by my submission file in the online course entitled "B
 | <img src="screenshots/1_img_list.jpg" width="250"> | <img src="screenshots/2_img_search.jpg" width="250"> | <img src="screenshots/3_img_detail.jpg" width="250"> |
 
 ## Data Stream
-This simple app retrieve the data from the locally stored .json file. So, there isn't data retrieval from the internet yet.
-
+This simple app retrieve the data from the locally stored .json file. But the internet connection is required to retrieve images from the network.
 ## References
 All the characters' data and assets was referred from the [Genshin Impact Fandom Wiki](https://genshin-impact.fandom.com/wiki/) website.
 
