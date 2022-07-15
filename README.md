@@ -10,9 +10,9 @@ This app also proposed to be my submission file in the online course entitled "B
 - Search any specific name you want.
 - Detail of chosen character.
 
-| Characters List                                    | Search Character                                     | Character's Detail                                   |
-|----------------------------------------------------|------------------------------------------------------|------------------------------------------------------|
-| <img src="screenshots/1_img_list.jpg" width="250"> | <img src="screenshots/2_img_search.jpg" width="250"> | <img src="screenshots/3_img_detail.jpg" width="250"> |
+| Characters List                                    | Search Character                                     | Empty Search Result                                        | Character's Detail                                   |
+|----------------------------------------------------|------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------|
+| <img src="screenshots/1_img_list.jpg" width="250"> | <img src="screenshots/2_img_search.jpg" width="250"> | <img src="screenshots/3_img_search_empty.jpg" width="250"> | <img src="screenshots/4_img_detail.jpg" width="250"> |
 
 ## Data Stream
 This simple app retrieve the data from the locally stored .json file. But the internet connection is required to retrieve images from the network.
