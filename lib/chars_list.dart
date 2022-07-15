@@ -109,20 +109,31 @@ class _CharsList extends State<CharsList> {
       _filteredList = tmpListChar;
     }
 
-    return Scaffold(
-      appBar: appTopAppBar,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth < 600) {
-            return _generateContainer(2);
-          } else if (constraints.maxWidth < 900) {
-            return _generateContainer(4);
-          } else {
-            return _generateContainer(6);
-          }
-        },
-      ),
-    );
+    if (filter.isNotEmpty && _filteredList.isEmpty) {
+      return Scaffold(
+        appBar: appTopAppBar,
+        body: Center(
+          child: Text("Character ${filter.toString()} is not found!",
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.blue, fontSize: 22.0)),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: appTopAppBar,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            if (constraints.maxWidth < 600) {
+              return _generateContainer(2);
+            } else if (constraints.maxWidth < 900) {
+              return _generateContainer(4);
+            } else {
+              return _generateContainer(6);
+            }
+          },
+        ),
+      );
+    }
   }
 
   Widget _generateContainer(int value) {
