@@ -42,6 +42,19 @@ class CharsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String imgRarity4 =
+        "https://static.wikia.nocookie.net/gensin-impact/images/7/77/Icon_4_Stars.png/revision/latest?cb=20201226100702";
+    const String imgRarity5 =
+        "https://static.wikia.nocookie.net/gensin-impact/images/2/2b/Icon_5_Stars.png/revision/latest?cb=20201226100736";
+
+    String imgRarity = "";
+
+    if (rarity == 5) {
+      imgRarity = imgRarity5;
+    } else {
+      imgRarity = imgRarity4;
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -148,6 +161,28 @@ class CharsDetail extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 color: AppColor.mainTextColor,
                               ),
+                            ),
+                            SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.006,
+                            ),
+                            Image.network(
+                              imgRarity,
+                              width: 90.0,
+                              height: 30.0,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white)),
+                                  );
+                                }
+                              },
                             ),
                             SizedBox(
                               height:
