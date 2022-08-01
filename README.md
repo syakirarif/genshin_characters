@@ -20,6 +20,11 @@ This simple app retrieve the data from the locally stored .json file. But the in
 ## References
 All the characters' data and assets was referred from the [Genshin Impact Fandom Wiki](https://genshin-impact.fandom.com/wiki/) website.
 
+## Download
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+    alt="Get it on Google Play"
+    height="80">](https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters)
+
 ## Creator
 <table>
   <tbody>
