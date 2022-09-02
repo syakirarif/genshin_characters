@@ -229,19 +229,21 @@ class CharsDetail extends StatelessWidget {
                                   decoration: BoxDecoration(
                                       color: vision == "Anemo"
                                           ? Colors.greenAccent
-                                          : vision == "Hydro"
-                                              ? Colors.lightBlueAccent
-                                              : vision == "Geo"
-                                                  ? Colors.amberAccent
-                                                  : vision == "Electro"
-                                                      ? Colors.purpleAccent
-                                                      : vision == "Pyro"
-                                                          ? Colors.redAccent
-                                                          : vision == "Cryo"
-                                                              ? Colors
-                                                                  .cyanAccent
-                                                              : AppColor
-                                                                  .secondTextColor,
+                                          : vision == "Dendro"
+                                              ? Colors.green
+                                              : vision == "Hydro"
+                                                  ? Colors.lightBlueAccent
+                                                  : vision == "Geo"
+                                                      ? Colors.amberAccent
+                                                      : vision == "Electro"
+                                                          ? Colors.purpleAccent
+                                                          : vision == "Pyro"
+                                                              ? Colors.redAccent
+                                                              : vision == "Cryo"
+                                                                  ? Colors
+                                                                      .cyanAccent
+                                                                  : AppColor
+                                                                      .secondTextColor,
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(
                                           10.0,
