@@ -97,7 +97,8 @@ class CharsCard extends StatelessWidget {
             height: 10.0,
           ),
           Center(
-            child: Image.network(customImage, width: 140,
+            child: Image.network(customImage,
+                width: 140, height: 140.0,
                 loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) {
                 return child;

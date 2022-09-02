@@ -85,6 +85,23 @@
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/0/0d/Character_Mona_Full_Wish.png/revision/latest?cb=20220507160129"
   },
   {
+    "id": 53,
+    "name": "Tighnari",
+    "vision": "Dendro",
+    "weapon": "Bow",
+    "nation": "Sumeru",
+    "affiliation": "Gandharva Ville, Sumeru Akademiya, Amurta",
+    "rarity": 5,
+    "constellation": "Vulpes Zerda",
+    "birthday": "December 29th",
+    "description": "A young researcher well-versed in botany who currently serves as a Forest Watcher in Avidya Forest. He is a straight shooter with a warm heart — and a dab hand at guiding even the dullest of pupils.",
+    "obtain": "Wish (Limited)",
+    "gender": "Male",
+    "image_portrait": "https://static.wikia.nocookie.net/gensin-impact/images/9/91/Character_Tighnari_Thumb.png/revision/latest?cb=20220824024817",
+    "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/b/b7/Character_Tighnari_Card.png/revision/latest?cb=20220711041536",
+    "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/8/88/Character_Tighnari_Wish.png/revision/latest?cb=20220826113700"
+  },
+  {
     "id": 7,
     "name": "Venti",
     "vision": "Anemo",
@@ -408,6 +425,23 @@
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/2/23/Character_Yelan_Full_Wish.png/revision/latest?cb=20220531085912"
   },
   {
+    "id": 27,
+    "name": "Kamisato Ayato",
+    "vision": "Hydro",
+    "weapon": "Sword",
+    "nation": "Inazuma",
+    "affiliation": "Yashiro Commission",
+    "rarity": 5,
+    "constellation": "Cyperessus Custos",
+    "birthday": "March 26th",
+    "description": "The young but highly accomplished head of the Yashiro Commission's Kamisato Clan. Cultured and polite, he is a man of many ways and means.",
+    "obtain": "Wish (Limited)",
+    "gender": "Male",
+    "image_portrait": "https://static.wikia.nocookie.net/gensin-impact/images/a/a2/Character_Kamisato_Ayato_Thumb.png/revision/latest?cb=20220601033710",
+    "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/2/22/Character_Kamisato_Ayato_Card.png/revision/latest?cb=20220204094446",
+    "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/c/ce/Character_Kamisato_Ayato_Full_Wish.png/revision/latest?cb=20220507133035"
+  },
+  {
     "id": 25,
     "name": "Traveler (Aether)",
     "vision": "Any",
@@ -440,23 +474,6 @@
     "image_portrait": "https://static.wikia.nocookie.net/gensin-impact/images/3/31/Character_Lumine_Thumb.png/revision/latest?cb=20220210041725",
     "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/1/1e/Traveler_Card.jpg/revision/latest?cb=20220629093837",
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/0/06/Character_Traveler_Launcher_Update_%28Lumine%29.png/revision/latest?cb=20210719111328"
-  },
-  {
-    "id": 27,
-    "name": "Kamisato Ayato",
-    "vision": "Hydro",
-    "weapon": "Sword",
-    "nation": "Inazuma",
-    "affiliation": "Yashiro Commission",
-    "rarity": 5,
-    "constellation": "Cyperessus Custos",
-    "birthday": "March 26th",
-    "description": "The young but highly accomplished head of the Yashiro Commission's Kamisato Clan. Cultured and polite, he is a man of many ways and means.",
-    "obtain": "Wish (Limited)",
-    "gender": "Male",
-    "image_portrait": "https://static.wikia.nocookie.net/gensin-impact/images/a/a2/Character_Kamisato_Ayato_Thumb.png/revision/latest?cb=20220601033710",
-    "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/2/22/Character_Kamisato_Ayato_Card.png/revision/latest?cb=20220204094446",
-    "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/c/ce/Character_Kamisato_Ayato_Full_Wish.png/revision/latest?cb=20220507133035"
   },
   {
     "id": 28,
@@ -882,5 +899,39 @@
     "image_portrait": "https://static.wikia.nocookie.net/gensin-impact/images/3/37/Character_Kuki_Shinobu_Thumb.png/revision/latest?cb=20220605061801",
     "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/1/14/Character_Kuki_Shinobu_Card.jpg/revision/latest?cb=20220328100750",
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/1/1f/Character_Kuki_Shinobu_Full_Wish.png/revision/latest?cb=20220621105256"
+  },
+  {
+    "id": 54,
+    "name": "Collei",
+    "vision": "Dendro",
+    "weapon": "Bow",
+    "nation": "Sumeru",
+    "affiliation": "Gandharva Ville",
+    "rarity": 4,
+    "constellation": "Leptailurus Cervarius",
+    "birthday": "May 8th",
+    "description": "A trainee ranger active in Avidya Forest. Behind her enthusiastic words and actions hides a slightly introverted personality.",
+    "obtain": "Wish (Standard), Event Reward",
+    "gender": "Female",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/collei_067_icon.webp",
+    "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/7/79/Character_Collei_Card.png/revision/latest?cb=20220711041855",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/collei_067_gacha_splash.webp"
+  },
+  {
+    "id": 55,
+    "name": "Dori",
+    "vision": "Electro",
+    "weapon": "Claymore",
+    "nation": "Sumeru",
+    "affiliation": "The Palace of Alcazarzaray",
+    "rarity": 4,
+    "constellation": "Magicae Lucerna",
+    "birthday": "December 2nd",
+    "description": "An elusive merchant who has a fondness for glittering Mora.",
+    "obtain": "Wish (Standard)",
+    "gender": "Female",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/dori_068_icon.webp",
+    "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/1/11/Character_Dori_Card.png/revision/latest?cb=20220711042206",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/dori_068_gacha_splash.webp"
   }
 ]
