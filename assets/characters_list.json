@@ -442,6 +442,42 @@
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/c/ce/Character_Kamisato_Ayato_Full_Wish.png/revision/latest?cb=20220507133035"
   },
   {
+    "id": 57,
+    "name": "Nilou",
+    "vision": "Hydro",
+    "weapon": "Sword",
+    "nation": "Sumeru",
+    "affiliation": "Zubayr Theater",
+    "rarity": 5,
+    "constellation": "Lotos Somno",
+    "birthday": "December 3rd",
+    "description": "The star of the Zubayr Theater. She is full of warmth and innocence, and her dances are lively and elegant.",
+    "obtain": "Wish (Limited)",
+    "gender": "Female",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/nilou_070_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/nilou_070_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/nilou_070_gacha_splash.webp",
+    "title": "Dance of Lotuslight"
+  },
+  {
+    "id": 58,
+    "name": "Cyno",
+    "vision": "Electro",
+    "weapon": "Polearm",
+    "nation": "Sumeru",
+    "affiliation": "Temple of Silence",
+    "rarity": 5,
+    "constellation": "Lupus Aureus",
+    "birthday": "June 23th",
+    "description": "The General Mahamatra in charge of supervising the researchers of the Akademiya. It is said that when he gets down to work, the General Mahamatra is even more efficient than the “Great Vayuvyastra” made by the Kshahrewar.",
+    "obtain": "Wish (Limited)",
+    "gender": "Male",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/cyno_071_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/cyno_071_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/cyno_071_gacha_splash.webp",
+    "title": "Judicator of Secrets"
+  },
+  {
     "id": 25,
     "name": "Traveler (Aether)",
     "vision": "Any",
@@ -933,5 +969,22 @@
     "image_portrait": "https://genshin.honeyhunterworld.com/img/dori_068_icon.webp",
     "image_card": "https://static.wikia.nocookie.net/gensin-impact/images/1/11/Character_Dori_Card.png/revision/latest?cb=20220711042206",
     "image_wish": "https://genshin.honeyhunterworld.com/img/dori_068_gacha_splash.webp"
+  },
+  {
+    "id": 56,
+    "name": "Candace",
+    "vision": "Hydro",
+    "weapon": "Polearm",
+    "nation": "Sumeru",
+    "affiliation": "Aaru Village",
+    "rarity": 4,
+    "constellation": "Sagitta Scutum",
+    "birthday": "May 3rd",
+    "description": "A descendant of King Deshret with an amber left eye. The defender of Aaru Village.",
+    "obtain": "Wish (Standard)",
+    "gender": "Female",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/candace_072_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/candace_072_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/candace_072_gacha_splash.webp"
   }
 ]
