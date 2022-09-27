@@ -14,6 +14,7 @@ class CharModel {
   String? imagePortrait;
   String? imageCard;
   String? imageWish;
+  String? title;
 
   //constructor
   CharModel({
@@ -32,6 +33,7 @@ class CharModel {
     this.imagePortrait,
     this.imageCard,
     this.imageWish,
+    this.title,
   });
 
   //mapping data
@@ -51,5 +53,6 @@ class CharModel {
     imagePortrait = json["image_portrait"];
     imageCard = json["image_card"];
     imageWish = json["image_wish"];
+    title = json["title"];
   }
 }
