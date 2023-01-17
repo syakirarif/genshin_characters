@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -69,21 +70,40 @@ class CharsDetail extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * 0.4,
                       color: backgroundColor,
                       child: Center(
-                        child: Image.network(
-                          imageWish,
+                        child: CachedNetworkImage(
                           height: MediaQuery.of(context).size.height * 0.4,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white)),
-                              );
-                            }
-                          },
+                          imageUrl: imageWish,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.red, BlendMode.colorBurn)),
+                            ),
+                          ),
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white)),
+                          errorWidget: (context, url, error) => const Image(
+                              image: AssetImage('assets/img_placeholder.png')),
                         ),
+                        // child: Image.network(
+                        //   imageWish,
+                        //   height: MediaQuery.of(context).size.height * 0.4,
+                        //   loadingBuilder: (context, child, loadingProgress) {
+                        //     if (loadingProgress == null) {
+                        //       return child;
+                        //     } else {
+                        //       return const Center(
+                        //         child: CircularProgressIndicator(
+                        //             valueColor: AlwaysStoppedAnimation<Color>(
+                        //                 Colors.white)),
+                        //       );
+                        //     }
+                        //   },
+                        // ),
                       ),
                     ),
                   ),
