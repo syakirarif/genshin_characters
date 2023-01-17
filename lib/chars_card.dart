@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
@@ -97,18 +98,36 @@ class CharsCard extends StatelessWidget {
             height: 10.0,
           ),
           Center(
-            child: Image.network(customImage,
-                width: 140, height: 140.0,
-                loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                );
-              }
-            }),
+            child: CachedNetworkImage(
+              width: 140,
+              height: 140,
+              imageUrl: customImage,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                      colorFilter: const ColorFilter.mode(
+                          Colors.red, BlendMode.colorBurn)),
+                ),
+              ),
+              placeholder: (context, url) => const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+              errorWidget: (context, url, error) =>
+                  const Image(image: AssetImage('assets/img_placeholder.png')),
+            ),
+            // child: Image.network(customImage, width: 140, height: 140.0,
+            //     loadingBuilder: (context, child, loadingProgress) {
+            //   if (loadingProgress == null) {
+            //     return child;
+            //   } else {
+            //     return const Center(
+            //       child: CircularProgressIndicator(
+            //           valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
+            //       ),
+            //     );
+            //   }
+            // }),
           ),
         ],
       ),
