@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
+import 'utils/colors.dart';
 
 class CharsCard extends StatelessWidget {
   const CharsCard({
