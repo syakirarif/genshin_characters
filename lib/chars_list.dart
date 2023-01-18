@@ -297,6 +297,44 @@ class _CharsList extends State<CharsList> {
       return list.map((e) => CharModel.fromJson(e)).toList();
     }
 
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (context) => AlertDialog(
+    //       shape: const RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.all(Radius.circular(32.0))),
+    //       contentPadding: const EdgeInsets.only(top: 10.0),
+    //       content: Container(
+    //           margin: const EdgeInsets.all(10.0),
+    //
+    //           child: Row(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             crossAxisAlignment: CrossAxisAlignment.center,
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: const <Widget>[
+    //               CircularProgressIndicator(),
+    //               SizedBox(width: 16.0),
+    //               Text("Please wait.."),
+    //             ],
+    //           )),
+    //     ));
+
+    showLoaderDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
+        content: Row(
+          children: [
+            const CircularProgressIndicator(),
+            Container(margin: const EdgeInsets.only(left: 7),child:const Text("Loading..." )),
+          ],),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }
+
     return Center(
       child: FutureBuilder(
         future: readJsonData(),
@@ -331,6 +369,7 @@ class _CharsList extends State<CharsList> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
+                        showLoaderDialog(context);
                         _createInterstitialAd(index);
                       },
                       child: CharsCard(
