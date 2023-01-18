@@ -18,7 +18,7 @@ This app also proposed to be my submission file in the online course entitled "B
 This simple app retrieve the data from the locally stored .json file. But the internet connection is required to retrieve images from the network.
 
 ## References
-All the characters' data and assets was referred from the [Genshin Impact Fandom Wiki](https://genshin-impact.fandom.com/wiki/) website.
+All the characters' data and assets was referred and retrieved from the [Honey Impact](https://genshin.honeyhunterworld.com/?lang=EN) and [Genshin Impact Fandom Wiki](https://genshin-impact.fandom.com/wiki/) website.
 
 ## Download
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
