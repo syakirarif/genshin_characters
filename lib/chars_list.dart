@@ -253,6 +253,7 @@ class _CharsList extends State<CharsList> {
             if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
               _createInterstitialAd(index);
             } else {
+              moveToCharsDetailPage(index);
               // Navigator.pushAndRemoveUntil(
               //   context,
               //   MaterialPageRoute(builder: (context) => HomeScreen()),
