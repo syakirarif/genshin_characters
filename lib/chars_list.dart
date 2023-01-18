@@ -1,15 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:genshin_characters/model/char_model.dart';
+import 'package:genshin_characters/utils/constants.dart' as constants;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'chars_card.dart';
 import 'chars_detail.dart';
-import 'colors.dart';
+import 'utils/colors.dart';
 
 class CharsList extends StatefulWidget {
   const CharsList({
@@ -63,16 +63,9 @@ class _CharsList extends State<CharsList> {
 
   @override
   Widget build(BuildContext context) {
-    // For AdMobs test purpose
-    final adUnitIdTestBanner = Platform.isAndroid
-        ? 'ca-app-pub-3940256099942544/6300978111'
-        : 'ca-app-pub-3940256099942544/2934735716';
-
-    const adUnitIdBanner = 'ca-app-pub-9167080444329708/1542151532';
 
     final BannerAd myBanner = BannerAd(
-      // adUnitId: adUnitIdBanner,
-      adUnitId: adUnitIdTestBanner,
+      adUnitId: constants.adUnitIdBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -187,39 +180,32 @@ class _CharsList extends State<CharsList> {
   }
 
   Widget _generateContainer(int value) {
-    const adUnitIdInterstitial = 'ca-app-pub-9167080444329708/2141751488';
 
-    // For AdMobs test purpose
-    final adUnitIdTestInterstitial = Platform.isAndroid
-        ? 'ca-app-pub-3940256099942544/1033173712'
-        : 'ca-app-pub-3940256099942544/4411468910';
 
     void moveToCharsDetailPage(int index) {
+      Navigator.pop(context);
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  CharsDetail(
-                      name: _filteredList[index].name.toString(),
-                      vision: _filteredList[index].vision.toString(),
-                      weapon: _filteredList[index].weapon.toString(),
-                      nation: _filteredList[index].nation.toString(),
-                      affiliation: _filteredList[index].affiliation.toString(),
-                      rarity: _filteredList[index].rarity!,
-                      constellation: _filteredList[index].constellation
-                          .toString(),
-                      birthday: _filteredList[index].birthday.toString(),
-                      description: _filteredList[index].description.toString(),
-                      obtain: _filteredList[index].obtain.toString(),
-                      gender: _filteredList[index].gender.toString(),
-                      imagePortrait: _filteredList[index].imagePortrait
-                          .toString(),
-                      imageCard: _filteredList[index].imageCard.toString(),
-                      imageWish: _filteredList[index].imageWish.toString(),
-                      title: _filteredList[index].title.toString(),
-                      backgroundColor: _filteredList[index].rarity == 5
-                          ? AppColor.rarity5
-                          : AppColor.rarity4)));
+              builder: (context) => CharsDetail(
+                  name: _filteredList[index].name.toString(),
+                  vision: _filteredList[index].vision.toString(),
+                  weapon: _filteredList[index].weapon.toString(),
+                  nation: _filteredList[index].nation.toString(),
+                  affiliation: _filteredList[index].affiliation.toString(),
+                  rarity: _filteredList[index].rarity!,
+                  constellation: _filteredList[index].constellation.toString(),
+                  birthday: _filteredList[index].birthday.toString(),
+                  description: _filteredList[index].description.toString(),
+                  obtain: _filteredList[index].obtain.toString(),
+                  gender: _filteredList[index].gender.toString(),
+                  imagePortrait: _filteredList[index].imagePortrait.toString(),
+                  imageCard: _filteredList[index].imageCard.toString(),
+                  imageWish: _filteredList[index].imageWish.toString(),
+                  title: _filteredList[index].title.toString(),
+                  backgroundColor: _filteredList[index].rarity == 5
+                      ? AppColor.rarity5
+                      : AppColor.rarity4)));
     }
 
     void _showInterstitialAd(int index) {
@@ -227,28 +213,20 @@ class _CharsList extends State<CharsList> {
         print('Warning: attempt to show interstitial before loaded.');
         return;
       }
-      // _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-      //   onAdDismissedFullScreenContent: (InterstitialAd ad) {
-      //     ad.dispose();
-      //     // Navigator.pushAndRemoveUntil(
-      //     //   context,
-      //     //   MaterialPageRoute(builder: (context) => HomeScreen()),
-      //     //       (route) => false,
-      //     // );
-      //   },
-      // );
 
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdShowedFullScreenContent: (InterstitialAd ad) =>
-            print('%ad onAdShowedFullScreenContent.'),
+        onAdShowedFullScreenContent: (InterstitialAd ad) {
+          moveToCharsDetailPage(index);
+            print('%ad onAdShowedFullScreenContent.');
+        },
         onAdDismissedFullScreenContent: (InterstitialAd ad) {
           print('$ad onAdDismissedFullScreenContent.');
           ad.dispose();
-          moveToCharsDetailPage(index);
         },
         onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
           print('$ad onAdFailedToShowFullScreenContent: $error');
           ad.dispose();
+          moveToCharsDetailPage(index);
         },
         onAdImpression: (InterstitialAd ad) =>
             print('$ad impression occurred.'),
@@ -260,7 +238,7 @@ class _CharsList extends State<CharsList> {
 
     void _createInterstitialAd(int index) {
       InterstitialAd.load(
-        adUnitId: adUnitIdTestInterstitial,
+        adUnitId: constants.adUnitIdInterstitial,
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
@@ -297,39 +275,21 @@ class _CharsList extends State<CharsList> {
       return list.map((e) => CharModel.fromJson(e)).toList();
     }
 
-    // showDialog(
-    //     context: context,
-    //     barrierDismissible: false,
-    //     builder: (context) => AlertDialog(
-    //       shape: const RoundedRectangleBorder(
-    //           borderRadius: BorderRadius.all(Radius.circular(32.0))),
-    //       contentPadding: const EdgeInsets.only(top: 10.0),
-    //       content: Container(
-    //           margin: const EdgeInsets.all(10.0),
-    //
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             crossAxisAlignment: CrossAxisAlignment.center,
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: const <Widget>[
-    //               CircularProgressIndicator(),
-    //               SizedBox(width: 16.0),
-    //               Text("Please wait.."),
-    //             ],
-    //           )),
-    //     ));
-
-    showLoaderDialog(BuildContext context){
-      AlertDialog alert=AlertDialog(
+    showLoaderDialog(BuildContext context) {
+      AlertDialog alert = AlertDialog(
         content: Row(
           children: [
             const CircularProgressIndicator(),
-            Container(margin: const EdgeInsets.only(left: 7),child:const Text("Loading..." )),
-          ],),
+            Container(
+                margin: const EdgeInsets.only(left: 7),
+                child: const Text("Loading...")),
+          ],
+        ),
       );
-      showDialog(barrierDismissible: false,
-        context:context,
-        builder:(BuildContext context){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
           return alert;
         },
       );
@@ -373,16 +333,14 @@ class _CharsList extends State<CharsList> {
                         _createInterstitialAd(index);
                       },
                       child: CharsCard(
-                        height: _filteredList[index].name
-                            .toString()
-                            .length > 14
+                        height: _filteredList[index].name.toString().length > 14
                             ? 270
                             : 250,
                         customColor: _filteredList[index].rarity == 5
                             ? AppColor.rarity5
                             : AppColor.rarity4,
                         customImage:
-                        _filteredList[index].imagePortrait.toString(),
+                            _filteredList[index].imagePortrait.toString(),
                         customButtonColor: AppColor.peachButtonColor,
                         charName: _filteredList[index].name.toString(),
                         charVision: _filteredList[index].vision.toString(),
