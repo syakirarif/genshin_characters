@@ -32,9 +32,15 @@ class _CharsList extends State<CharsList> {
 
   String filter = "";
 
+  InterstitialAd? _interstitialAd;
+  int _numInterstitialLoadAttempts = 0;
+  int maxFailedLoadAttempts = 3;
+  bool isTimeToShow = true;
+
   @override
   void dispose() {
     controller.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -57,9 +63,8 @@ class _CharsList extends State<CharsList> {
 
   @override
   Widget build(BuildContext context) {
-
     // For AdMobs test purpose
-    final adUnitIdTest = Platform.isAndroid
+    final adUnitIdTestBanner = Platform.isAndroid
         ? 'ca-app-pub-3940256099942544/6300978111'
         : 'ca-app-pub-3940256099942544/2934735716';
 
@@ -67,8 +72,8 @@ class _CharsList extends State<CharsList> {
 
     final BannerAd myBanner = BannerAd(
       // adUnitId: adUnitIdBanner,
-      adUnitId: adUnitIdTest,
-      size: AdSize.largeBanner,
+      adUnitId: adUnitIdTestBanner,
+      size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
         // Called when an ad is successfully received.
@@ -182,6 +187,105 @@ class _CharsList extends State<CharsList> {
   }
 
   Widget _generateContainer(int value) {
+    const adUnitIdInterstitial = 'ca-app-pub-9167080444329708/2141751488';
+
+    // For AdMobs test purpose
+    final adUnitIdTestInterstitial = Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/1033173712'
+        : 'ca-app-pub-3940256099942544/4411468910';
+
+    void moveToCharsDetailPage(int index) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  CharsDetail(
+                      name: _filteredList[index].name.toString(),
+                      vision: _filteredList[index].vision.toString(),
+                      weapon: _filteredList[index].weapon.toString(),
+                      nation: _filteredList[index].nation.toString(),
+                      affiliation: _filteredList[index].affiliation.toString(),
+                      rarity: _filteredList[index].rarity!,
+                      constellation: _filteredList[index].constellation
+                          .toString(),
+                      birthday: _filteredList[index].birthday.toString(),
+                      description: _filteredList[index].description.toString(),
+                      obtain: _filteredList[index].obtain.toString(),
+                      gender: _filteredList[index].gender.toString(),
+                      imagePortrait: _filteredList[index].imagePortrait
+                          .toString(),
+                      imageCard: _filteredList[index].imageCard.toString(),
+                      imageWish: _filteredList[index].imageWish.toString(),
+                      title: _filteredList[index].title.toString(),
+                      backgroundColor: _filteredList[index].rarity == 5
+                          ? AppColor.rarity5
+                          : AppColor.rarity4)));
+    }
+
+    void _showInterstitialAd(int index) {
+      if (_interstitialAd == null) {
+        print('Warning: attempt to show interstitial before loaded.');
+        return;
+      }
+      // _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      //   onAdDismissedFullScreenContent: (InterstitialAd ad) {
+      //     ad.dispose();
+      //     // Navigator.pushAndRemoveUntil(
+      //     //   context,
+      //     //   MaterialPageRoute(builder: (context) => HomeScreen()),
+      //     //       (route) => false,
+      //     // );
+      //   },
+      // );
+
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdShowedFullScreenContent: (InterstitialAd ad) =>
+            print('%ad onAdShowedFullScreenContent.'),
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          print('$ad onAdDismissedFullScreenContent.');
+          ad.dispose();
+          moveToCharsDetailPage(index);
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          print('$ad onAdFailedToShowFullScreenContent: $error');
+          ad.dispose();
+        },
+        onAdImpression: (InterstitialAd ad) =>
+            print('$ad impression occurred.'),
+      );
+
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
+
+    void _createInterstitialAd(int index) {
+      InterstitialAd.load(
+        adUnitId: adUnitIdTestInterstitial,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            _interstitialAd = ad;
+            _numInterstitialLoadAttempts = 0;
+            _showInterstitialAd(index);
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('InterstitialAd failed to load: $error');
+            _numInterstitialLoadAttempts += 1;
+            _interstitialAd = null;
+            if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
+              _createInterstitialAd(index);
+            } else {
+              // Navigator.pushAndRemoveUntil(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HomeScreen()),
+              //       (route) => false,
+              // );
+            }
+          },
+        ),
+      );
+    }
+
     Future<List<CharModel>> readJsonData() async {
       //read json file
       final jsondata = await root_bundle.rootBundle
@@ -227,59 +331,19 @@ class _CharsList extends State<CharsList> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CharsDetail(
-                                    name: _filteredList[index].name.toString(),
-                                    vision:
-                                        _filteredList[index].vision.toString(),
-                                    weapon:
-                                        _filteredList[index].weapon.toString(),
-                                    nation:
-                                        _filteredList[index].nation.toString(),
-                                    affiliation: _filteredList[index]
-                                        .affiliation
-                                        .toString(),
-                                    rarity: _filteredList[index].rarity!,
-                                    constellation: _filteredList[index]
-                                        .constellation
-                                        .toString(),
-                                    birthday: _filteredList[index]
-                                        .birthday
-                                        .toString(),
-                                    description: _filteredList[index]
-                                        .description
-                                        .toString(),
-                                    obtain:
-                                        _filteredList[index].obtain.toString(),
-                                    gender:
-                                        _filteredList[index].gender.toString(),
-                                    imagePortrait: _filteredList[index]
-                                        .imagePortrait
-                                        .toString(),
-                                    imageCard: _filteredList[index]
-                                        .imageCard
-                                        .toString(),
-                                    imageWish: _filteredList[index]
-                                        .imageWish
-                                        .toString(),
-                                    title:
-                                        _filteredList[index].title.toString(),
-                                    backgroundColor:
-                                        _filteredList[index].rarity == 5
-                                            ? AppColor.rarity5
-                                            : AppColor.rarity4)));
+                        _createInterstitialAd(index);
                       },
                       child: CharsCard(
-                        height: _filteredList[index].name.toString().length > 14
+                        height: _filteredList[index].name
+                            .toString()
+                            .length > 14
                             ? 270
                             : 250,
                         customColor: _filteredList[index].rarity == 5
                             ? AppColor.rarity5
                             : AppColor.rarity4,
                         customImage:
-                            _filteredList[index].imagePortrait.toString(),
+                        _filteredList[index].imagePortrait.toString(),
                         customButtonColor: AppColor.peachButtonColor,
                         charName: _filteredList[index].name.toString(),
                         charVision: _filteredList[index].vision.toString(),
