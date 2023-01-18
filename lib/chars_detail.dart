@@ -22,6 +22,7 @@ class CharsDetail extends StatelessWidget {
       required this.imagePortrait,
       required this.imageCard,
       required this.imageWish,
+      required this.title,
       required this.backgroundColor})
       : super(key: key);
 
@@ -39,6 +40,7 @@ class CharsDetail extends StatelessWidget {
   final String imagePortrait;
   final String imageCard;
   final String imageWish;
+  final String title;
   final Color backgroundColor;
 
   @override
@@ -76,34 +78,21 @@ class CharsDetail extends StatelessWidget {
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.red, BlendMode.colorBurn)),
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white)),
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white)),
+                          ),
                           errorWidget: (context, url, error) => const Image(
-                              image: AssetImage('assets/img_placeholder.png')),
+                            image: AssetImage('assets/img_placeholder.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        // child: Image.network(
-                        //   imageWish,
-                        //   height: MediaQuery.of(context).size.height * 0.4,
-                        //   loadingBuilder: (context, child, loadingProgress) {
-                        //     if (loadingProgress == null) {
-                        //       return child;
-                        //     } else {
-                        //       return const Center(
-                        //         child: CircularProgressIndicator(
-                        //             valueColor: AlwaysStoppedAnimation<Color>(
-                        //                 Colors.white)),
-                        //       );
-                        //     }
-                        //   },
-                        // ),
                       ),
                     ),
                   ),
@@ -232,6 +221,17 @@ class CharsDetail extends StatelessWidget {
                             ),
                             Text(
                               "Constellation: $constellation",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: AppColor.mainTextColor,
+                              ),
+                            ),
+                            SizedBox(
+                              height:
+                              MediaQuery.of(context).size.height * 0.006,
+                            ),
+                            Text(
+                              "Title: $title",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AppColor.mainTextColor,
