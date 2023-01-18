@@ -105,29 +105,20 @@ class CharsCard extends StatelessWidget {
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                      colorFilter: const ColorFilter.mode(
-                          Colors.red, BlendMode.colorBurn)),
+                    image: imageProvider,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-              placeholder: (context, url) => const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-              errorWidget: (context, url, error) =>
-                  const Image(image: AssetImage('assets/img_placeholder.png')),
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+              ),
+              errorWidget: (context, url, error) => const Image(
+                image: AssetImage('assets/img_placeholder.png'),
+                fit: BoxFit.cover,
+              ),
             ),
-            // child: Image.network(customImage, width: 140, height: 140.0,
-            //     loadingBuilder: (context, child, loadingProgress) {
-            //   if (loadingProgress == null) {
-            //     return child;
-            //   } else {
-            //     return const Center(
-            //       child: CircularProgressIndicator(
-            //           valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
-            //       ),
-            //     );
-            //   }
-            // }),
           ),
         ],
       ),

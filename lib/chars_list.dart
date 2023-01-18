@@ -219,6 +219,8 @@ class _CharsList extends State<CharsList> {
                                     imageWish: _filteredList[index]
                                         .imageWish
                                         .toString(),
+                                    title:
+                                        _filteredList[index].title.toString(),
                                     backgroundColor:
                                         _filteredList[index].rarity == 5
                                             ? AppColor.rarity5
