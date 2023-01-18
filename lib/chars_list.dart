@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:genshin_characters/model/char_model.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'chars_card.dart';
 import 'chars_detail.dart';
@@ -55,6 +57,48 @@ class _CharsList extends State<CharsList> {
 
   @override
   Widget build(BuildContext context) {
+
+    // For AdMobs test purpose
+    final adUnitIdTest = Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/6300978111'
+        : 'ca-app-pub-3940256099942544/2934735716';
+
+    const adUnitIdBanner = 'ca-app-pub-9167080444329708/1542151532';
+
+    final BannerAd myBanner = BannerAd(
+      // adUnitId: adUnitIdBanner,
+      adUnitId: adUnitIdTest,
+      size: AdSize.largeBanner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => print('Ad closed.'),
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => print('Ad impression.'),
+      ),
+    );
+
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
+    myBanner.load();
+
     final appTopAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Colors.white,
@@ -132,6 +176,7 @@ class _CharsList extends State<CharsList> {
             }
           },
         ),
+        bottomNavigationBar: adContainer,
       );
     }
   }
