@@ -2,10 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:genshin_characters/utils/constants.dart' as constants;
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'colors.dart';
+import 'utils/colors.dart';
 
-class CharsDetail extends StatelessWidget {
+class CharsDetail extends StatefulWidget {
   const CharsDetail(
       {Key? key,
       required this.name,
@@ -44,18 +47,64 @@ class CharsDetail extends StatelessWidget {
   final Color backgroundColor;
 
   @override
+  State<StatefulWidget> createState() => _CharsDetail();
+}
+
+class _CharsDetail extends State<CharsDetail> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const String imgRarity4 =
-        "https://static.wikia.nocookie.net/gensin-impact/images/7/77/Icon_4_Stars.png/revision/latest?cb=20201226100702";
-    const String imgRarity5 =
-        "https://static.wikia.nocookie.net/gensin-impact/images/2/2b/Icon_5_Stars.png/revision/latest?cb=20201226100736";
+
+    final BannerAd myBanner = BannerAd(
+      // adUnitId: adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBanner,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => print('Ad closed.'),
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => print('Ad impression.'),
+      ),
+    );
+
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
+    myBanner.load();
+
 
     String imgRarity = "";
 
-    if (rarity == 5) {
-      imgRarity = imgRarity5;
+    if (widget.rarity == 5) {
+      imgRarity = constants.imgRarity5;
     } else {
-      imgRarity = imgRarity4;
+      imgRarity = constants.imgRarity4;
     }
 
     return MaterialApp(
@@ -70,11 +119,11 @@ class CharsDetail extends StatelessWidget {
                   Positioned(
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.4,
-                      color: backgroundColor,
+                      color: widget.backgroundColor,
                       child: Center(
                         child: CachedNetworkImage(
                           height: MediaQuery.of(context).size.height * 0.4,
-                          imageUrl: imageWish,
+                          imageUrl: widget.imageWish,
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -164,7 +213,7 @@ class CharsDetail extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              name,
+                              widget.name,
                               style: TextStyle(
                                 fontSize: 30.0,
                                 fontWeight: FontWeight.bold,
@@ -175,30 +224,34 @@ class CharsDetail extends StatelessWidget {
                               height:
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
-                            Image.network(
-                              imgRarity,
+                            CachedNetworkImage(
                               width: 90.0,
                               height: 30.0,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white)),
-                                  );
-                                }
-                              },
+                              imageUrl: imgRarity,
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white)),
+                              ),
+                              errorWidget: (context, url, error) => const Image(
+                                image: AssetImage('assets/img_placeholder.png'),
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
                             SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              gender,
+                              widget.gender,
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AppColor.secondTextColor,
@@ -209,7 +262,7 @@ class CharsDetail extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Birthday: $birthday",
+                              "Birthday: ${widget.birthday}",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AppColor.mainTextColor,
@@ -220,7 +273,7 @@ class CharsDetail extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Constellation: $constellation",
+                              "Constellation: ${widget.constellation}",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AppColor.mainTextColor,
@@ -228,10 +281,10 @@ class CharsDetail extends StatelessWidget {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Title: $title",
+                              "Title: ${widget.title}",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AppColor.mainTextColor,
@@ -247,19 +300,22 @@ class CharsDetail extends StatelessWidget {
                                   width: 100.0,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                      color: vision == "Anemo"
+                                      color: widget.vision == "Anemo"
                                           ? Colors.greenAccent
-                                          : vision == "Dendro"
+                                          : widget.vision == "Dendro"
                                               ? Colors.green
-                                              : vision == "Hydro"
+                                              : widget.vision == "Hydro"
                                                   ? Colors.lightBlueAccent
-                                                  : vision == "Geo"
+                                                  : widget.vision == "Geo"
                                                       ? Colors.amberAccent
-                                                      : vision == "Electro"
+                                                      : widget.vision ==
+                                                              "Electro"
                                                           ? Colors.purpleAccent
-                                                          : vision == "Pyro"
+                                                          : widget.vision ==
+                                                                  "Pyro"
                                                               ? Colors.redAccent
-                                                              : vision == "Cryo"
+                                                              : widget.vision ==
+                                                                      "Cryo"
                                                                   ? Colors
                                                                       .cyanAccent
                                                                   : AppColor
@@ -279,7 +335,7 @@ class CharsDetail extends StatelessWidget {
                                         ),
                                       )),
                                   child: Text(
-                                    vision,
+                                    widget.vision,
                                     style: const TextStyle(
                                       fontSize: 20.0,
                                     ),
@@ -299,7 +355,7 @@ class CharsDetail extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      nation,
+                                      widget.nation,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30.0,
@@ -325,7 +381,7 @@ class CharsDetail extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              description,
+                              widget.description,
                               style: TextStyle(
                                 height: 1.4,
                                 fontSize: 18.0,
@@ -348,7 +404,7 @@ class CharsDetail extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              obtain,
+                              widget.obtain,
                               style: TextStyle(
                                 height: 1.4,
                                 fontSize: 18.0,
@@ -363,6 +419,7 @@ class CharsDetail extends StatelessWidget {
                 ],
               )),
         ),
+        bottomNavigationBar: adContainer,
       ),
     );
   }
