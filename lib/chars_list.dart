@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:genshin_characters/model/char_model.dart';
-import 'package:genshin_characters/utils/constants.dart' as constants;
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'chars_card.dart';
@@ -65,7 +65,7 @@ class _CharsList extends State<CharsList> {
   Widget build(BuildContext context) {
 
     final BannerAd myBanner = BannerAd(
-      adUnitId: constants.adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -238,7 +238,7 @@ class _CharsList extends State<CharsList> {
 
     void _createInterstitialAd(int index) {
       InterstitialAd.load(
-        adUnitId: constants.adUnitIdInterstitial,
+        adUnitId: constants_key.adUnitIdInterstitial,
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {

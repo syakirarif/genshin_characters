@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:genshin_characters/utils/constants.dart' as constants;
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'utils/colors.dart';
@@ -65,7 +66,7 @@ class _CharsDetail extends State<CharsDetail> {
 
     final BannerAd myBanner = BannerAd(
       // adUnitId: adUnitIdBanner,
-      adUnitId: constants.adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
