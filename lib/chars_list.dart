@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -63,7 +65,6 @@ class _CharsList extends State<CharsList> {
 
   @override
   Widget build(BuildContext context) {
-
     final BannerAd myBanner = BannerAd(
       adUnitId: constants_key.adUnitIdBanner,
       size: AdSize.banner,
@@ -180,8 +181,6 @@ class _CharsList extends State<CharsList> {
   }
 
   Widget _generateContainer(int value) {
-
-
     void moveToCharsDetailPage(int index) {
       Navigator.pop(context);
       Navigator.push(
@@ -217,7 +216,7 @@ class _CharsList extends State<CharsList> {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (InterstitialAd ad) {
           moveToCharsDetailPage(index);
-            print('%ad onAdShowedFullScreenContent.');
+          print('%ad onAdShowedFullScreenContent.');
         },
         onAdDismissedFullScreenContent: (InterstitialAd ad) {
           print('$ad onAdDismissedFullScreenContent.');
@@ -331,12 +330,20 @@ class _CharsList extends State<CharsList> {
                     GestureDetector(
                       onTap: () {
                         showLoaderDialog(context);
-                        _createInterstitialAd(index);
+                        if (kIsWeb) {
+                          moveToCharsDetailPage(index);
+                        } else {
+                          if (Platform.isAndroid || Platform.isIOS) {
+                            _createInterstitialAd(index);
+                          } else {
+                            moveToCharsDetailPage(index);
+                          }
+                        }
                       },
                       child: CharsCard(
                         height: _filteredList[index].name.toString().length > 14
                             ? 270
-                            : 250,
+                            : 260,
                         customColor: _filteredList[index].rarity == 5
                             ? AppColor.rarity5
                             : AppColor.rarity4,

@@ -106,7 +106,7 @@ class CharsCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: imageProvider,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
               ),
@@ -116,7 +116,7 @@ class CharsCard extends StatelessWidget {
               ),
               errorWidget: (context, url, error) => const Image(
                 image: AssetImage('assets/img_placeholder.png'),
-                fit: BoxFit.cover,
+                fit: BoxFit.scaleDown,
               ),
             ),
           ),

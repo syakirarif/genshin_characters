@@ -224,23 +224,27 @@ class _CharsDetail extends State<CharsDetail> {
                               height:
                                   MediaQuery.of(context).size.height * 0.006,
                             ),
-                            Image.network(
-                              imgRarity,
+                            CachedNetworkImage(
                               width: 90.0,
                               height: 30.0,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white)),
-                                  );
-                                }
-                              },
+                              imageUrl: imgRarity,
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white)),
+                              ),
+                              errorWidget: (context, url, error) => const Image(
+                                image: AssetImage('assets/img_placeholder.png'),
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
                             SizedBox(
                               height:
