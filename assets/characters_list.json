@@ -100,7 +100,7 @@
     "constellation": "Vulpes Zerda",
     "birthday": "December 29th",
     "description": "A young researcher well-versed in botany who currently serves as a Forest Watcher in Avidya Forest. He is a straight shooter with a warm heart — and a dab hand at guiding even the dullest of pupils.",
-    "obtain": "Wish (Limited)",
+    "obtain": "Wish (Standard)",
     "gender": "Male",
     "title": "Verdant Strider",
     "image_portrait": "https://genshin.honeyhunterworld.com/img/tighnari_069_icon.webp",
@@ -559,6 +559,24 @@
   },
   {
     "id": 32,
+    "name": "Dehya",
+    "vision": "Pyro",
+    "weapon": "Claymore",
+    "nation": "Sumeru",
+    "affiliation": "The Eremites",
+    "rarity": 5,
+    "constellation": "Mantichora",
+    "birthday": "April 7th",
+    "description": "A member of the Eremites, a mercenary organization that roams the sands of Sumeru. Valiant and powerful, she enjoys great fame amongst her fellow Eremites.",
+    "obtain": "Wish (Limited)",
+    "gender": "Female",
+    "title": "Flame-Mane",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/dehya_079_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/dehya_079_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/dehya_079_gacha_splash.webp"
+  },
+  {
+    "id": 33,
     "name": "Traveler (Aether)",
     "vision": "Any",
     "weapon": "Sword",
@@ -576,7 +594,7 @@
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/9/98/Character_Traveler_Launcher_Update_%28Aether%29.png/revision/latest?cb=20210719111232"
   },
   {
-    "id": 33,
+    "id": 34,
     "name": "Traveler (Lumine)",
     "vision": "Any",
     "weapon": "Sword",
@@ -594,7 +612,7 @@
     "image_wish": "https://static.wikia.nocookie.net/gensin-impact/images/0/06/Character_Traveler_Launcher_Update_%28Lumine%29.png/revision/latest?cb=20210719111328"
   },
   {
-    "id": 34,
+    "id": 35,
     "name": "Amber",
     "vision": "Pyro",
     "weapon": "Bow",
@@ -612,7 +630,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/ambor_021_gacha_splash.webp"
   },
   {
-    "id": 35,
+    "id": 36,
     "name": "Barbara",
     "vision": "Hydro",
     "weapon": "Catalyst",
@@ -630,7 +648,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/barbara_014_gacha_splash.webp"
   },
   {
-    "id": 36,
+    "id": 37,
     "name": "Beidou",
     "vision": "Electro",
     "weapon": "Claymore",
@@ -648,7 +666,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/beidou_024_gacha_splash.webp"
   },
   {
-    "id": 37,
+    "id": 38,
     "name": "Bennett",
     "vision": "Pyro",
     "weapon": "Sword",
@@ -666,7 +684,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/bennett_032_gacha_splash.webp"
   },
   {
-    "id": 38,
+    "id": 39,
     "name": "Chongyun",
     "vision": "Cryo",
     "weapon": "Claymore",
@@ -684,7 +702,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/chongyun_036_gacha_splash.webp"
   },
   {
-    "id": 39,
+    "id": 40,
     "name": "Fischl",
     "vision": "Electro",
     "weapon": "Bow",
@@ -702,7 +720,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/fischl_031_gacha_splash.webp"
   },
   {
-    "id": 40,
+    "id": 41,
     "name": "Kaeya",
     "vision": "Cryo",
     "weapon": "Sword",
@@ -720,7 +738,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/kaeya_015_gacha_splash.webp"
   },
   {
-    "id": 41,
+    "id": 42,
     "name": "Lisa",
     "vision": "Electro",
     "weapon": "Catalyst",
@@ -738,7 +756,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/lisa_006_gacha_splash.webp"
   },
   {
-    "id": 42,
+    "id": 43,
     "name": "Ningguang",
     "vision": "Geo",
     "weapon": "Catalyst",
@@ -756,7 +774,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/ningguang_027_gacha_splash.webp"
   },
   {
-    "id": 43,
+    "id": 44,
     "name": "Noelle",
     "vision": "Geo",
     "weapon": "Claymore",
@@ -774,7 +792,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/noel_034_gacha_splash.webp"
   },
   {
-    "id": 44,
+    "id": 45,
     "name": "Razor",
     "vision": "Electro",
     "weapon": "Claymore",
@@ -792,7 +810,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/razor_020_gacha_splash.webp"
   },
   {
-    "id": 45,
+    "id": 46,
     "name": "Sucrose",
     "vision": "Anemo",
     "weapon": "Catalyst",
@@ -810,7 +828,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/sucrose_043_gacha_splash.webp"
   },
   {
-    "id": 46,
+    "id": 47,
     "name": "Xiangling",
     "vision": "Pyro",
     "weapon": "Polearm",
@@ -828,7 +846,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/xiangling_023_gacha_splash.webp"
   },
   {
-    "id": 47,
+    "id": 48,
     "name": "Xingqiu",
     "vision": "Hydro",
     "weapon": "Sword",
@@ -846,7 +864,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/xingqiu_025_gacha_splash.webp"
   },
   {
-    "id": 48,
+    "id": 49,
     "name": "Diona",
     "vision": "Cryo",
     "weapon": "Bow",
@@ -864,7 +882,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/diona_039_gacha_splash.webp"
   },
   {
-    "id": 49,
+    "id": 50,
     "name": "Xinyan",
     "vision": "Pyro",
     "weapon": "Claymore",
@@ -882,7 +900,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/xinyan_044_gacha_splash.webp"
   },
   {
-    "id": 50,
+    "id": 51,
     "name": "Yun Jin",
     "vision": "Geo",
     "weapon": "Polearm",
@@ -900,7 +918,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/yunjin_064_gacha_splash.webp"
   },
   {
-    "id": 51,
+    "id": 52,
     "name": "Thoma",
     "vision": "Pyro",
     "weapon": "Polearm",
@@ -918,7 +936,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/tohma_050_gacha_splash.webp"
   },
   {
-    "id": 52,
+    "id": 53,
     "name": "Shikanoin Heizou",
     "vision": "Anemo",
     "weapon": "Catalyst",
@@ -936,7 +954,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/heizo_059_gacha_splash.webp"
   },
   {
-    "id": 53,
+    "id": 54,
     "name": "Yanfei",
     "vision": "Pyro",
     "weapon": "Catalyst",
@@ -954,7 +972,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/feiyan_048_gacha_splash.webp"
   },
   {
-    "id": 54,
+    "id": 55,
     "name": "Rosaria",
     "vision": "Cryo",
     "weapon": "Polearm",
@@ -972,7 +990,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/rosaria_045_gacha_splash.webp"
   },
   {
-    "id": 55,
+    "id": 56,
     "name": "Gorou",
     "vision": "Geo",
     "weapon": "Bow",
@@ -990,7 +1008,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/gorou_055_gacha_splash.webp"
   },
   {
-    "id": 56,
+    "id": 57,
     "name": "Sayu",
     "vision": "Anemo",
     "weapon": "Claymore",
@@ -1008,7 +1026,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/sayu_053_gacha_splash.webp"
   },
   {
-    "id": 57,
+    "id": 58,
     "name": "Kujou Sara",
     "vision": "Electro",
     "weapon": "Bow",
@@ -1026,7 +1044,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/sara_056_gacha_splash.webp"
   },
   {
-    "id": 58,
+    "id": 59,
     "name": "Kuki Shinobu",
     "vision": "Electro",
     "weapon": "Sword",
@@ -1044,7 +1062,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/shinobu_065_gacha_splash.webp"
   },
   {
-    "id": 59,
+    "id": 60,
     "name": "Collei",
     "vision": "Dendro",
     "weapon": "Bow",
@@ -1062,7 +1080,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/collei_067_gacha_splash.webp"
   },
   {
-    "id": 60,
+    "id": 61,
     "name": "Dori",
     "vision": "Electro",
     "weapon": "Claymore",
@@ -1080,7 +1098,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/dori_068_gacha_splash.webp"
   },
   {
-    "id": 61,
+    "id": 62,
     "name": "Candace",
     "vision": "Hydro",
     "weapon": "Polearm",
@@ -1098,7 +1116,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/candace_072_gacha_splash.webp"
   },
   {
-    "id": 62,
+    "id": 63,
     "name": "Layla",
     "vision": "Cryo",
     "weapon": "Sword",
@@ -1116,7 +1134,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/layla_074_gacha_splash.webp"
   },
   {
-    "id": 63,
+    "id": 64,
     "name": "Faruzan",
     "vision": "Anemo",
     "weapon": "Bow",
@@ -1134,7 +1152,7 @@
     "image_wish": "https://genshin.honeyhunterworld.com/img/faruzan_076_gacha_splash.webp"
   },
   {
-    "id": 64,
+    "id": 65,
     "name": "Yaoyao",
     "vision": "Dendro",
     "weapon": "Polearm",
@@ -1150,5 +1168,23 @@
     "image_portrait": "https://genshin.honeyhunterworld.com/img/yaoyao_077_icon.webp",
     "image_card": "https://genshin.honeyhunterworld.com/img/yaoyao_077_gacha_card.webp",
     "image_wish": "https://genshin.honeyhunterworld.com/img/yaoyao_077_gacha_splash.webp"
+  },
+  {
+    "id": 66,
+    "name": "Mika",
+    "vision": "Cryo",
+    "weapon": "Polearm",
+    "nation": "Mondstadt",
+    "affiliation": "Knights of Favonius",
+    "rarity": 4,
+    "constellation": "Palumbus",
+    "birthday": "August, 11th",
+    "description": "A young knight born to an ordinary family. He serves as a Front-Line Surveyor in his Company. He is a low-key and cautious character.",
+    "obtain": "Wish (Standard)",
+    "gender": "Male",
+    "title": "Coordinates of Clear Frost",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/mika_080_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/mika_080_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/mika_080_gacha_splash.webp"
   }
 ]
