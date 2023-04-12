@@ -63,7 +63,6 @@ class _CharsDetail extends State<CharsDetail> {
 
   @override
   Widget build(BuildContext context) {
-
     final BannerAd myBanner = BannerAd(
       // adUnitId: adUnitIdBanner,
       adUnitId: constants_key.adUnitIdBanner,
@@ -71,19 +70,25 @@ class _CharsDetail extends State<CharsDetail> {
       request: const AdRequest(),
       listener: BannerAdListener(
         // Called when an ad is successfully received.
-        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        onAdLoaded: (Ad ad) => {},
         // Called when an ad request failed.
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           // Dispose the ad here to free resources.
           ad.dispose();
-          print('Ad failed to load: $error');
+          //print('Ad failed to load: $error');
         },
         // Called when an ad opens an overlay that covers the screen.
-        onAdOpened: (Ad ad) => print('Ad opened.'),
+        onAdOpened: (Ad ad) => {
+          //print('Ad opened.')
+        },
         // Called when an ad removes an overlay that covers the screen.
-        onAdClosed: (Ad ad) => print('Ad closed.'),
+        onAdClosed: (Ad ad) => {
+          //print('Ad closed.')
+        },
         // Called when an impression occurs on the ad.
-        onAdImpression: (Ad ad) => print('Ad impression.'),
+        onAdImpression: (Ad ad) => {
+          // print('Ad impression.')
+        },
       ),
     );
 
@@ -97,7 +102,6 @@ class _CharsDetail extends State<CharsDetail> {
     );
 
     myBanner.load();
-
 
     String imgRarity = "";
 
@@ -228,7 +232,8 @@ class _CharsDetail extends State<CharsDetail> {
                               width: 90.0,
                               height: 30.0,
                               imageUrl: imgRarity,
-                              imageBuilder: (context, imageProvider) => Container(
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: imageProvider,
