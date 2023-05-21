@@ -5,7 +5,9 @@ import 'package:genshin_characters/utils/web_view_stack.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({Key? key}) : super(key: key);
+  const WebViewScreen({required this.redeemCode, Key? key}) : super(key: key);
+
+  final String redeemCode;
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -14,11 +16,11 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   late final WebViewController _controller;
 
-  final String webUrl =
-      'https://genshin.hoyoverse.com/en/gift?code=XT82F8JZS4TR';
+  String webUrl = '';
 
   @override
   void initState() {
+    webUrl = 'https://genshin.hoyoverse.com/en/gift?code=${widget.redeemCode}';
     _controller = WebViewController()
       ..loadRequest(
         Uri.parse(webUrl),
