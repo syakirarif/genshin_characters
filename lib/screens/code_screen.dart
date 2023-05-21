@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
 import 'package:genshin_characters/widgets/item_code.dart';
-import 'package:genshin_characters/widgets/most_popular.dart';
 
 class Product {
   final String title;
@@ -94,15 +93,15 @@ class _CodeScreenState extends State<CodeScreen> {
       ]),
       body: CustomScrollView(
         slivers: [
-          SliverPadding(
-            padding: padding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                ((context, index) => const MostPopularCategory()),
-                childCount: 1,
-              ),
-            ),
-          ),
+          // SliverPadding(
+          //   padding: padding,
+          //   sliver: SliverList(
+          //     delegate: SliverChildBuilderDelegate(
+          //       ((context, index) => const MostPopularCategory()),
+          //       childCount: 1,
+          //     ),
+          //   ),
+          // ),
           SliverPadding(
             padding: padding,
             sliver: _buildPopulars(),
