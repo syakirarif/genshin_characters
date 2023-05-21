@@ -1,69 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
+import 'package:genshin_characters/model/code_model.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
+import 'package:genshin_characters/services/data_code_service.dart';
 import 'package:genshin_characters/widgets/item_code.dart';
-
-class Product {
-  final String title;
-  final double star;
-  final int sold;
-  final double price;
-  final String icon;
-  final String id;
-
-  Product(
-      {this.title = '',
-      this.star = 0.0,
-      this.sold = 0,
-      this.price = 0.0,
-      this.icon = '',
-      this.id = '0'});
-}
-
-final homePopularProducts = [
-  Product(
-    title: 'Foam Padded Chair',
-    star: 4.5,
-    sold: 8374,
-    price: 120.00,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-  Product(
-    title: 'Small Bookcase',
-    star: 4.7,
-    sold: 7483,
-    price: 145.40,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-  Product(
-    title: 'Glass Lamp',
-    star: 4.3,
-    sold: 6937,
-    price: 40.00,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-  Product(
-    title: 'Glass Package',
-    star: 4.9,
-    sold: 8174,
-    price: 55.00,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-  Product(
-    title: 'Plastic Chair',
-    star: 4.6,
-    sold: 6843,
-    price: 65.00,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-  Product(
-    title: 'Wooden Chairs',
-    star: 4.5,
-    sold: 7758,
-    price: 69.00,
-    icon: 'assets/icons/products/book_case@2x.png',
-  ),
-];
 
 class CodeScreen extends StatefulWidget {
   const CodeScreen({Key? key}) : super(key: key);
@@ -73,11 +13,10 @@ class CodeScreen extends StatefulWidget {
 }
 
 class _CodeScreenState extends State<CodeScreen> {
-  late final datas = homePopularProducts;
+  List<CodeModel> codeDatas = [];
 
   @override
   Widget build(BuildContext context) {
-    const padding = EdgeInsets.fromLTRB(24, 24, 24, 0);
     return Scaffold(
       appBar: FRAppBar.defaultAppBar(context, title: 'Redeem Codes', actions: [
         IconButton(
@@ -85,46 +24,59 @@ class _CodeScreenState extends State<CodeScreen> {
             Icons.account_circle_outlined,
             size: 32,
           ),
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (builder) => WebViewScreen()));
-          },
+          onPressed: () {},
         ),
       ]),
-      body: CustomScrollView(
-        slivers: [
-          // SliverPadding(
-          //   padding: padding,
-          //   sliver: SliverList(
-          //     delegate: SliverChildBuilderDelegate(
-          //       ((context, index) => const MostPopularCategory()),
-          //       childCount: 1,
-          //     ),
-          //   ),
-          // ),
-          SliverPadding(
-            padding: padding,
-            sliver: _buildPopulars(),
-          ),
-          const SliverAppBar(flexibleSpace: SizedBox(height: 24))
-        ],
-      ),
+      body: _mainDataBody(),
+    );
+  }
+
+  Widget _mainDataBody() {
+    const padding = EdgeInsets.fromLTRB(24, 24, 24, 0);
+    return StreamBuilder(
+      stream: DataCodeService().codes,
+      builder: (context, AsyncSnapshot<List<CodeModel>> toDoSnapshot) {
+        if (toDoSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (toDoSnapshot.hasError) {
+          return Center(
+            child: Text(toDoSnapshot.error.toString()),
+          );
+        }
+
+        if (toDoSnapshot.data != null) {
+          codeDatas = toDoSnapshot.data as List<CodeModel>;
+          debugPrint('codeDatas: ${codeDatas.length}');
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: padding,
+                sliver: _buildPopulars(),
+              ),
+              const SliverAppBar(flexibleSpace: SizedBox(height: 24))
+            ],
+          );
+        } else {
+          return const Center(
+            child: Text('No Data Available'),
+          );
+        }
+      },
     );
   }
 
   Widget _buildPopulars() {
     return SliverList(
-      // gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-      //   maxCrossAxisExtent: 185,
-      //   mainAxisSpacing: 24,
-      //   crossAxisSpacing: 16,
-      //   mainAxisExtent: 285,
-      // ),
-      delegate: SliverChildBuilderDelegate(_buildPopularItem, childCount: 30),
+      delegate: SliverChildBuilderDelegate(_buildPopularItem,
+          childCount: codeDatas.length),
     );
   }
 
-  void showBottomSheet({required String email}) {
+  void _showBottomSheet({required CodeModel data}) {
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
@@ -139,15 +91,27 @@ class _CodeScreenState extends State<CodeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const Text(
-                      'Input Data Redeem Code',
-                      style: TextStyle(fontSize: 16),
+                    Text(
+                      '${data.code}',
+                      style: const TextStyle(fontSize: 16),
                     ),
-                    const Text('Expiration Time:',
-                        style: TextStyle(fontSize: 12)),
                     const SizedBox(
                       height: 10,
                     ),
+                    Text('${data.codeDetail}',
+                        style: const TextStyle(fontSize: 12)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    FilledButton.tonal(
+                        onPressed: () {
+                          if (data.code != null) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (builder) =>
+                                    WebViewScreen(redeemCode: data.code!)));
+                          }
+                        },
+                        child: const Text('REDEEM NOW'))
                   ],
                 ),
               ),
@@ -155,12 +119,13 @@ class _CodeScreenState extends State<CodeScreen> {
   }
 
   Widget _buildPopularItem(BuildContext context, int index) {
-    final data = datas[index % datas.length];
-    return ItemCode(
-      onClickItem: showBottomSheet,
+    return GestureDetector(
+      onTap: () {
+        _showBottomSheet(data: codeDatas[index]);
+      },
+      child: ItemCode(
+        dataModel: codeDatas[index],
+      ),
     );
-    // return ProductCard(
-    //   data: data,
-    // );
   }
 }

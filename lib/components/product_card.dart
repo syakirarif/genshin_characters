@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:genshin_characters/screens/code_screen.dart';
+import 'package:genshin_characters/model/code_model.dart';
 
-typedef ProductCardOnTaped = void Function(Product data);
+typedef ProductCardOnTaped = void Function(CodeModel data);
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.data, this.ontap});
 
-  final Product data;
+  final CodeModel data;
   final ProductCardOnTaped? ontap;
 
   @override
@@ -26,11 +26,12 @@ class ProductCard extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                Image.asset(data.icon, width: 182, height: 182),
+                // Image.asset(data.icon, width: 182, height: 182),
                 Positioned(
                   top: 16,
                   right: 16,
-                  child: Image.asset('assets/icons/not_collected@2x.png', width: 28, height: 28),
+                  child: Image.asset('assets/icons/not_collected@2x.png',
+                      width: 28, height: 28),
                 )
               ],
             ),
@@ -38,7 +39,7 @@ class ProductCard extends StatelessWidget {
           const SizedBox(height: 12),
           FittedBox(
             child: Text(
-              data.title,
+              '${data.code}',
               style: const TextStyle(
                 color: Color(0xFF212121),
                 fontWeight: FontWeight.bold,
@@ -50,9 +51,11 @@ class ProductCard extends StatelessWidget {
           _buildSoldPoint(4.5, 6937),
           const SizedBox(height: 10),
           Text(
-            '\$${data.price.toStringAsFixed(2)}',
+            '\$${data.gameName}',
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF212121)),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF212121)),
           )
         ],
       ),
@@ -75,7 +78,10 @@ class ProductCard extends StatelessWidget {
         const SizedBox(width: 8),
         const Text(
           '|',
-          style: TextStyle(fontWeight: FontWeight.w500, color: Color(0xFF616161), fontSize: 14),
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF616161),
+              fontSize: 14),
         ),
         const SizedBox(width: 8),
         Container(
