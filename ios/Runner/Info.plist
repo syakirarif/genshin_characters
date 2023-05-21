@@ -47,5 +47,10 @@
 	<true/>
 	<key>GADApplicationIdentifier</key>
     <string>ca-app-pub-9167080444329708~3676240728</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>sms</string>
+      <string>tel</string>
+    </array>
 </dict>
 </plist>
