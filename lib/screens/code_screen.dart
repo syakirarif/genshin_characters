@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
+import 'package:genshin_characters/screens/web_view_screen.dart';
 import 'package:genshin_characters/widgets/item_code.dart';
 import 'package:genshin_characters/widgets/most_popular.dart';
 
@@ -11,7 +12,13 @@ class Product {
   final String icon;
   final String id;
 
-  Product({this.title = '', this.star = 0.0, this.sold = 0, this.price = 0.0, this.icon = '', this.id = '0'});
+  Product(
+      {this.title = '',
+      this.star = 0.0,
+      this.sold = 0,
+      this.price = 0.0,
+      this.icon = '',
+      this.id = '0'});
 }
 
 final homePopularProducts = [
@@ -75,8 +82,14 @@ class _CodeScreenState extends State<CodeScreen> {
     return Scaffold(
       appBar: FRAppBar.defaultAppBar(context, title: 'Redeem Codes', actions: [
         IconButton(
-          icon: const Icon(Icons.account_circle_outlined, size: 32,),
-          onPressed: () {},
+          icon: const Icon(
+            Icons.account_circle_outlined,
+            size: 32,
+          ),
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (builder) => WebViewScreen()));
+          },
         ),
       ]),
       body: CustomScrollView(
@@ -115,33 +128,31 @@ class _CodeScreenState extends State<CodeScreen> {
   void showBottomSheet({required String email}) {
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.vertical(top: Radius.circular(25.0))),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-          padding: const EdgeInsets.all(22),
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Text(
-                  'Input Data Redeem Code',
-                  style: TextStyle(fontSize: 16),
+              padding: const EdgeInsets.all(22),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Text(
+                      'Input Data Redeem Code',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const Text('Expiration Time:',
+                        style: TextStyle(fontSize: 12)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
-                const Text('Expiration Time:',
-                    style: TextStyle(fontSize: 12)),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-          ),
-        )
-    );
+              ),
+            ));
   }
 
   Widget _buildPopularItem(BuildContext context, int index) {
@@ -153,6 +164,4 @@ class _CodeScreenState extends State<CodeScreen> {
     //   data: data,
     // );
   }
-
-
 }
