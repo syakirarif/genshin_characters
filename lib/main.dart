@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:genshin_characters/chars_list.dart';
+import 'package:genshin_characters/screens/home_screen.dart';
+import 'package:genshin_characters/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() {
@@ -18,11 +19,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(child: CharsList()),
-      ),
+      theme: appTheme(),
+      home: const HomeScreen()
+      // home: Scaffold(
+      //   body: SafeArea(child: HomeScreen()),
+      // ),
     );
   }
 }
