@@ -146,14 +146,8 @@ class _CodeScreenState extends State<CodeScreen> {
 
   Widget _buildPopularItem(BuildContext context, int index) {
     final data = datas[index % datas.length];
-    return GestureDetector(
-      onTap: () {
-        showBottomSheet(email: '');
-        debugPrint('index: $index');
-      },
-      child: ItemCode(
-        onClickItem: showBottomSheet,
-      ),
+    return ItemCode(
+      onClickItem: showBottomSheet,
     );
     // return ProductCard(
     //   data: data,
