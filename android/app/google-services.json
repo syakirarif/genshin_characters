@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "486246775823",
+    "project_id": "redeem-code-admin-47c30",
+    "storage_bucket": "redeem-code-admin-47c30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486246775823:android:f1e165ad1b128a753fb77a",
+        "android_client_info": {
+          "package_name": "com.example.admin_redeem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486246775823-1cs8vgi1j2ec8mrp3e5h9i41gda0vic7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqflEIP-4xoR7TQA2I2NuVTChhvzjD0q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486246775823-1cs8vgi1j2ec8mrp3e5h9i41gda0vic7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "486246775823-d4g8434u63v2rcmeabvdfdp27sb07spl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.adminRedeem"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486246775823:android:82a5da165164cfa43fb77a",
+        "android_client_info": {
+          "package_name": "com.syakirarif.genshin_characters"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486246775823-1cs8vgi1j2ec8mrp3e5h9i41gda0vic7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqflEIP-4xoR7TQA2I2NuVTChhvzjD0q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486246775823-1cs8vgi1j2ec8mrp3e5h9i41gda0vic7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "486246775823-d4g8434u63v2rcmeabvdfdp27sb07spl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.adminRedeem"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
