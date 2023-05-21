@@ -39,7 +39,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
   }
 
   _launchURL() async {
-    final Uri url = Uri.parse('https://genshin.hoyoverse.com/en/gift');
+    final Uri url = Uri.parse(widget.url);
     if (!await launchUrl(
       url,
       mode: LaunchMode.externalApplication,
