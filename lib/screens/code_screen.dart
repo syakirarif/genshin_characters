@@ -4,7 +4,9 @@ import 'package:genshin_characters/model/code_model.dart';
 import 'package:genshin_characters/screens/profile_screen.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
 import 'package:genshin_characters/services/data_code_service.dart';
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/widgets/item_code.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class CodeScreen extends StatefulWidget {
   const CodeScreen({Key? key}) : super(key: key);
@@ -13,8 +15,66 @@ class CodeScreen extends StatefulWidget {
   State<CodeScreen> createState() => _CodeScreenState();
 }
 
-class _CodeScreenState extends State<CodeScreen> {
+class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
   List<CodeModel> codeDatas = [];
+
+  bool isAdBannerSuccess = false;
+
+  BannerAd _bannerAd() {
+    return BannerAd(
+      adUnitId: constants_key.adUnitIdBanner,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) {
+          setState(() {
+            isAdBannerSuccess = true;
+          });
+          // print('Ad loaded.')
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          setState(() {
+            isAdBannerSuccess = false;
+          });
+          ad.dispose();
+          //print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => {
+          //print('Ad opened.')
+        },
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => {
+          //print('Ad closed.')
+        },
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => {
+          // print('Ad impression.')
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    _bannerAd().load();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +92,22 @@ class _CodeScreenState extends State<CodeScreen> {
         ),
       ]),
       body: _mainDataBody(),
+      bottomNavigationBar:
+          isAdBannerSuccess ? _createBannerAd(_bannerAd()) : null,
     );
+  }
+
+  Widget _createBannerAd(BannerAd myBanner) {
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
+    return adContainer;
   }
 
   Widget _mainDataBody() {
