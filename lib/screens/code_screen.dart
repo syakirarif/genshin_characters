@@ -36,7 +36,7 @@ class _CodeScreenState extends State<CodeScreen> {
   }
 
   Widget _mainDataBody() {
-    const padding = EdgeInsets.fromLTRB(24, 24, 24, 0);
+    const padding = EdgeInsets.fromLTRB(20, 20, 20, 0);
     return StreamBuilder(
       stream: DataCodeService().codes,
       builder: (context, AsyncSnapshot<List<CodeModel>> toDoSnapshot) {
@@ -107,15 +107,18 @@ class _CodeScreenState extends State<CodeScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    FilledButton.tonal(
-                        onPressed: () {
-                          if (data.code != null) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (builder) =>
-                                    WebViewScreen(redeemCode: data.code!)));
-                          }
-                        },
-                        child: const Text('REDEEM NOW'))
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.tonal(
+                          onPressed: () {
+                            if (data.code != null) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (builder) =>
+                                      WebViewScreen(redeemCode: data.code!)));
+                            }
+                          },
+                          child: const Text('REDEEM NOW')),
+                    )
                   ],
                 ),
               ),

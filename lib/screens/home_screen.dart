@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:genshin_characters/chars_list.dart';
+import 'package:genshin_characters/screens/char_screen.dart';
 import 'package:genshin_characters/screens/code_screen.dart';
 import 'package:genshin_characters/utils/image_loader.dart';
 import 'package:genshin_characters/utils/size_config.dart';
@@ -34,7 +34,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _select = 0;
 
-  final screens = [const CharsList(), const CodeScreen()];
+  final screens = [const CharScreen(), const CodeScreen()];
 
   final List<BottomNavigationBarItem> items = [
     const BottomNavigationBarItem(

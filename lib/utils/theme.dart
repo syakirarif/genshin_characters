@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 ThemeData appTheme() => ThemeData(
+  useMaterial3: true,
       scaffoldBackgroundColor: Colors.white,
       fontFamily: 'Urbanist',
       appBarTheme: const AppBarTheme(
         color: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.blue),
       ),
-      inputDecorationTheme: inputDecorationTheme(),
+      // inputDecorationTheme: inputDecorationTheme(),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
 

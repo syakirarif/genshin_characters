@@ -37,7 +37,7 @@
   },
   {
     "id": 3,
-    "name": "Diluc",
+    "name": "Diluc Ragnvindr",
     "vision": "Pyro",
     "weapon": "Claymore",
     "nation": "Mondstadt",
@@ -55,7 +55,7 @@
   },
   {
     "id": 4,
-    "name": "Jean",
+    "name": "Jean Gunnhildr",
     "vision": "Anemo",
     "weapon": "Sword",
     "nation": "Mondstadt",
@@ -73,7 +73,7 @@
   },
   {
     "id": 5,
-    "name": "Mona",
+    "name": "Mona Megistus",
     "vision": "Hydro",
     "weapon": "Catalyst",
     "nation": "Mondstadt",
@@ -307,7 +307,7 @@
   },
   {
     "id": 18,
-    "name": "Eula",
+    "name": "Eula Lawrence",
     "vision": "Cryo",
     "weapon": "Claymore",
     "nation": "Mondstadt",
@@ -649,7 +649,7 @@
   },
   {
     "id": 37,
-    "name": "Barbara",
+    "name": "Barbara Pegg",
     "vision": "Hydro",
     "weapon": "Catalyst",
     "nation": "Mondstadt",
@@ -721,7 +721,7 @@
   },
   {
     "id": 41,
-    "name": "Fischl",
+    "name": "Fischl von Luftschloss Narfidort",
     "vision": "Electro",
     "weapon": "Bow",
     "nation": "Mondstadt",
@@ -739,7 +739,7 @@
   },
   {
     "id": 42,
-    "name": "Kaeya",
+    "name": "Kaeya Alberich",
     "vision": "Cryo",
     "weapon": "Sword",
     "nation": "Mondstadt",
@@ -757,7 +757,7 @@
   },
   {
     "id": 43,
-    "name": "Lisa",
+    "name": "Lisa Minci",
     "vision": "Electro",
     "weapon": "Catalyst",
     "nation": "Mondstadt",
@@ -847,7 +847,7 @@
   },
   {
     "id": 48,
-    "name": "Xiangling",
+    "name": "Xiangling Mao",
     "vision": "Pyro",
     "weapon": "Polearm",
     "nation": "Liyue",
@@ -1222,5 +1222,23 @@
     "image_portrait": "https://genshin.honeyhunterworld.com/img/kaveh_081_icon.webp",
     "image_card": "https://genshin.honeyhunterworld.com/img/kaveh_081_gacha_card.webp",
     "image_wish": "https://genshin.honeyhunterworld.com/img/kaveh_081_gacha_splash.webp"
+  },
+  {
+    "id": 69,
+    "name": "Kirara",
+    "vision": "Dendro",
+    "weapon": "Sword",
+    "nation": "Inazuma",
+    "affiliation": "Komaniya Express",
+    "rarity": 4,
+    "constellation": "Arcella",
+    "birthday": "January 22nd",
+    "description": "A courier for Komaniya Express, a delivery company in Inazuma. A nekomata who loves her job and human society.",
+    "obtain": "Wish (Standard)",
+    "gender": "Female",
+    "title": "Cat Upon the Eaves",
+    "image_portrait": "https://genshin.honeyhunterworld.com/img/momoka_061_icon.webp",
+    "image_card": "https://genshin.honeyhunterworld.com/img/momoka_061_gacha_card.webp",
+    "image_wish": "https://genshin.honeyhunterworld.com/img/momoka_061_gacha_splash.webp"
   }
 ]

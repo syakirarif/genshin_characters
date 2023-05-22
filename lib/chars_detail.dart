@@ -51,6 +51,8 @@ class CharsDetail extends StatefulWidget {
 }
 
 class _CharsDetail extends State<CharsDetail> {
+  bool isAdBannerSuccess = false;
+
   @override
   void initState() {
     super.initState();
@@ -70,10 +72,17 @@ class _CharsDetail extends State<CharsDetail> {
       request: const AdRequest(),
       listener: BannerAdListener(
         // Called when an ad is successfully received.
-        onAdLoaded: (Ad ad) => {},
+        onAdLoaded: (Ad ad) {
+          setState(() {
+            isAdBannerSuccess = true;
+          });
+        },
         // Called when an ad request failed.
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           // Dispose the ad here to free resources.
+          setState(() {
+            isAdBannerSuccess = false;
+          });
           ad.dispose();
           //print('Ad failed to load: $error');
         },
@@ -92,6 +101,8 @@ class _CharsDetail extends State<CharsDetail> {
       ),
     );
 
+    myBanner.load();
+
     final AdWidget adWidget = AdWidget(ad: myBanner);
 
     final Container adContainer = Container(
@@ -101,8 +112,6 @@ class _CharsDetail extends State<CharsDetail> {
       child: adWidget,
     );
 
-    myBanner.load();
-
     String imgRarity = "";
 
     if (widget.rarity == 5) {
@@ -110,7 +119,6 @@ class _CharsDetail extends State<CharsDetail> {
     } else {
       imgRarity = constants.imgRarity4;
     }
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -219,14 +227,15 @@ class _CharsDetail extends State<CharsDetail> {
                             Text(
                               widget.name,
                               style: TextStyle(
-                                fontSize: 30.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 28.0,
                                 fontWeight: FontWeight.bold,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             CachedNetworkImage(
                               width: 90.0,
@@ -234,13 +243,13 @@ class _CharsDetail extends State<CharsDetail> {
                               imageUrl: imgRarity,
                               imageBuilder: (context, imageProvider) =>
                                   Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.scaleDown,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
                               placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
@@ -253,45 +262,49 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.gender,
                               style: TextStyle(
-                                fontSize: 18.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 16.0,
                                 color: AppColor.secondTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               "Birthday: ${widget.birthday}",
                               style: TextStyle(
-                                fontSize: 18.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 16.0,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               "Constellation: ${widget.constellation}",
                               style: TextStyle(
-                                fontSize: 18.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 16.0,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               "Title: ${widget.title}",
                               style: TextStyle(
-                                fontSize: 18.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 16.0,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
@@ -308,13 +321,13 @@ class _CharsDetail extends State<CharsDetail> {
                                       color: widget.vision == "Anemo"
                                           ? Colors.greenAccent
                                           : widget.vision == "Dendro"
-                                              ? Colors.green
-                                              : widget.vision == "Hydro"
-                                                  ? Colors.lightBlueAccent
-                                                  : widget.vision == "Geo"
-                                                      ? Colors.amberAccent
-                                                      : widget.vision ==
-                                                              "Electro"
+                                          ? Colors.green
+                                          : widget.vision == "Hydro"
+                                          ? Colors.lightBlueAccent
+                                          : widget.vision == "Geo"
+                                          ? Colors.amberAccent
+                                          : widget.vision ==
+                                          "Electro"
                                                           ? Colors.purpleAccent
                                                           : widget.vision ==
                                                                   "Pyro"
@@ -325,24 +338,13 @@ class _CharsDetail extends State<CharsDetail> {
                                                                       .cyanAccent
                                                                   : AppColor
                                                                       .secondTextColor,
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(
-                                          10.0,
-                                        ),
-                                        topRight: Radius.circular(
-                                          10.0,
-                                        ),
-                                        bottomLeft: Radius.circular(
-                                          10.0,
-                                        ),
-                                        bottomRight: Radius.circular(
-                                          10.0,
-                                        ),
-                                      )),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
                                   child: Text(
                                     widget.vision,
                                     style: const TextStyle(
-                                      fontSize: 20.0,
+                                      fontFamily: 'Urbanist',
+                                      fontSize: 18.0,
                                     ),
                                   ),
                                 ),
@@ -355,15 +357,17 @@ class _CharsDetail extends State<CharsDetail> {
                                     Text(
                                       "Nation:",
                                       style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontFamily: 'Urbanist',
+                                        fontSize: 16.0,
                                         color: AppColor.mainTextColor,
                                       ),
                                     ),
                                     Text(
                                       widget.nation,
                                       style: const TextStyle(
+                                        fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 30.0,
+                                        fontSize: 28.0,
                                       ),
                                     )
                                   ],
@@ -376,20 +380,22 @@ class _CharsDetail extends State<CharsDetail> {
                             Text(
                               "Character Description",
                               style: TextStyle(
-                                fontSize: 22.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.description,
                               style: TextStyle(
+                                fontFamily: 'Urbanist',
                                 height: 1.4,
-                                fontSize: 18.0,
+                                fontSize: 16.0,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
@@ -399,22 +405,27 @@ class _CharsDetail extends State<CharsDetail> {
                             Text(
                               "Obtain Via",
                               style: TextStyle(
-                                fontSize: 22.0,
+                                fontFamily: 'Urbanist',
+                                fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: AppColor.mainTextColor,
                               ),
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.obtain,
                               style: TextStyle(
+                                fontFamily: 'Urbanist',
                                 height: 1.4,
-                                fontSize: 18.0,
+                                fontSize: 16.0,
                                 color: AppColor.mainTextColor,
                               ),
+                            ),
+                            const SizedBox(
+                              height: 40,
                             ),
                           ],
                         ),
@@ -424,7 +435,7 @@ class _CharsDetail extends State<CharsDetail> {
                 ],
               )),
         ),
-        bottomNavigationBar: adContainer,
+        bottomNavigationBar: isAdBannerSuccess ? adContainer : null,
       ),
     );
   }
