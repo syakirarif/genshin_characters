@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/model/code_model.dart';
+import 'package:genshin_characters/screens/profile_screen.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
 import 'package:genshin_characters/services/data_code_service.dart';
 import 'package:genshin_characters/widgets/item_code.dart';
@@ -24,7 +25,10 @@ class _CodeScreenState extends State<CodeScreen> {
             Icons.account_circle_outlined,
             size: 32,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (builder) => ProfileScreen()));
+          },
         ),
       ]),
       body: _mainDataBody(),
