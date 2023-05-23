@@ -32,7 +32,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WebView'),
         actions: [
           NavigationControls(controller: _controller),
           NavigationMenu(

@@ -45,6 +45,8 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
   bool isAdBannerSuccess = false;
   bool isAdInterstitialSuccess = false;
 
+  late BannerAd bannerAd;
+
   @override
   void dispose() {
     controller.dispose();
@@ -55,7 +57,8 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
+    bannerAd = _initBannerAd();
+    bannerAd.load();
     _createInterstitialAd();
     controller.addListener(() {
       if (controller.text.isEmpty) {
@@ -119,8 +122,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    BannerAd bannerAd = _initBannerAd();
-    bannerAd.load();
 
     final appTopAppBar = AppBar(
       elevation: 0.5,
@@ -217,8 +218,14 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
   Widget _myFab() {
     return FloatingActionButton.extended(
         backgroundColor: Colors.blue,
-        label: const Text('Filter'),
-        icon: const Icon(Icons.filter_alt_outlined),
+        label: const Text(
+          'Filter',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: const Icon(
+          Icons.filter_alt_outlined,
+          color: Colors.white,
+        ),
         onPressed: () {
           _showBottomSheet();
         });
@@ -488,23 +495,23 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     );
   }
 
-  showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: Row(
-        children: [
-          const CircularProgressIndicator(),
-          Container(
-              margin: const EdgeInsets.only(left: 7),
-              child: const Text("Loading...")),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+// showLoaderDialog(BuildContext context) {
+//   AlertDialog alert = AlertDialog(
+//     content: Row(
+//       children: [
+//         const CircularProgressIndicator(),
+//         Container(
+//             margin: const EdgeInsets.only(left: 7),
+//             child: const Text("Loading...")),
+//       ],
+//     ),
+//   );
+//   showDialog(
+//     barrierDismissible: false,
+//     context: context,
+//     builder: (BuildContext context) {
+//       return alert;
+//     },
+//   );
+// }
 }

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/model/code_model.dart';
@@ -18,9 +21,39 @@ class CodeScreen extends StatefulWidget {
 class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
   List<CodeModel> codeDatas = [];
 
-  bool isAdBannerSuccess = false;
+  InterstitialAd? _interstitialAd;
+  int _numInterstitialLoadAttempts = 0;
+  int maxFailedLoadAttempts = 3;
 
-  BannerAd _bannerAd() {
+  bool isAdBannerLoaded = false;
+  bool isAdInterstitialLoaded = false;
+
+  late BannerAd bannerAd;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    _createInterstitialAd();
+    bannerAd = _initBannerAd();
+    bannerAd.load();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _interstitialAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _createInterstitialAd();
+    }
+  }
+
+  BannerAd _initBannerAd() {
     return BannerAd(
       adUnitId: constants_key.adUnitIdBanner,
       size: AdSize.banner,
@@ -29,7 +62,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
         // Called when an ad is successfully received.
         onAdLoaded: (Ad ad) {
           setState(() {
-            isAdBannerSuccess = true;
+            isAdBannerLoaded = true;
           });
           // print('Ad loaded.')
         },
@@ -37,7 +70,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           // Dispose the ad here to free resources.
           setState(() {
-            isAdBannerSuccess = false;
+            isAdBannerLoaded = false;
           });
           ad.dispose();
           //print('Ad failed to load: $error');
@@ -58,28 +91,69 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
     );
   }
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    _bannerAd().load();
-    super.initState();
+  void _createInterstitialAd() async {
+    await InterstitialAd.load(
+      adUnitId: constants_key.adUnitIdInterstitial,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+          _numInterstitialLoadAttempts = 0;
+
+          setState(() {
+            isAdInterstitialLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          debugPrint('InterstitialAd failed to load: $error');
+          _numInterstitialLoadAttempts += 1;
+          _interstitialAd = null;
+
+          setState(() {
+            isAdInterstitialLoaded = false;
+          });
+        },
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  void _showInterstitialAd({required CodeModel data}) {
+    if (_interstitialAd == null) {
+      debugPrint('Warning: attempt to show interstitial before loaded.');
+      return;
+    }
+
+    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (InterstitialAd ad) {
+        moveToRedeemPage(data: data);
+        debugPrint('%ad onAdShowedFullScreenContent.');
+      },
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        debugPrint('$ad onAdDismissedFullScreenContent.');
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        debugPrint('$ad onAdFailedToShowFullScreenContent: $error');
+        ad.dispose();
+        moveToRedeemPage(data: data);
+      },
+      onAdImpression: (InterstitialAd ad) =>
+          debugPrint('$ad impression occurred.'),
+    );
+
+    _interstitialAd!.show();
+    _interstitialAd = null;
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {}
+  void moveToRedeemPage({required CodeModel data}) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (builder) => WebViewScreen(redeemCode: data.code!)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FRAppBar.defaultAppBar(context, title: 'Redeem Codes', actions: [
+      appBar: FRAppBar.defaultAppBar(context, title: 'Genshin Codes', actions: [
         IconButton(
           icon: const Icon(
             Icons.account_circle_outlined,
@@ -92,8 +166,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
         ),
       ]),
       body: _mainDataBody(),
-      bottomNavigationBar:
-          isAdBannerSuccess ? _createBannerAd(_bannerAd()) : null,
+      bottomNavigationBar: isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
     );
   }
 
@@ -162,42 +235,54 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
         context: context,
         isScrollControlled: true,
         builder: (context) => Container(
-              padding: const EdgeInsets.all(22),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      '${data.code}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text('${data.codeDetail}',
-                        style: const TextStyle(fontSize: 12)),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.tonal(
+          padding: const EdgeInsets.all(22),
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '${data.code}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text('${data.codeDetail}',
+                    style: const TextStyle(fontSize: 12)),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                      child: FilledButton(
+                          style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll<Color>(Colors.blue),
+                          ),
                           onPressed: () {
-                            if (data.code != null) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (builder) =>
-                                      WebViewScreen(redeemCode: data.code!)));
+                            if (kIsWeb) {
+                              moveToRedeemPage(data: data);
+                            } else {
+                              if (Platform.isAndroid || Platform.isIOS) {
+                                if (isAdInterstitialLoaded) {
+                                  _showInterstitialAd(data: data);
+                                } else {
+                                  moveToRedeemPage(data: data);
+                                }
+                              } else {
+                                moveToRedeemPage(data: data);
+                              }
                             }
                           },
-                          child: const Text('REDEEM NOW')),
+                          child: const Text('GO TO REDEEM PAGE')),
                     )
-                  ],
-                ),
-              ),
-            ));
+              ],
+            ),
+          ),
+        ));
   }
 
   Widget _buildPopularItem(BuildContext context, int index) {

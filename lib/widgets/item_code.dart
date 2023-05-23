@@ -12,7 +12,7 @@ class ItemCode extends StatefulWidget {
 }
 
 class _ItemCodeState extends State<ItemCode> {
-  bool isMyFav = false;
+  bool isNewCode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,23 +64,20 @@ class _ItemCodeState extends State<ItemCode> {
                     height: 35,
                     padding: const EdgeInsets.all(5),
                     duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isMyFav
-                              ? Colors.red.shade100
-                              : Colors.grey.shade300,
-                        )),
+                    // decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(12),
+                    //     border: Border.all(
+                    //       color: isNewCode
+                    //           ? Colors.red.shade100
+                    //           : Colors.grey.shade300,
+                    //     )),
                     child: Center(
-                        child: isMyFav
-                            ? const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
+                        child: isNewCode
+                            ? Icon(
+                                Icons.fiber_new,
+                                color: Colors.red.shade700,
                               )
-                            : Icon(
-                                Icons.favorite_outline,
-                                color: Colors.grey.shade600,
-                              ))),
+                            : null)),
               )
             ],
           ),
