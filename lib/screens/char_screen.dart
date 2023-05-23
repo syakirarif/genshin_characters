@@ -34,6 +34,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   List<CharModel> charsData = [];
   List<CharModel> _filteredList = [];
+  List<CharModel> filteredCharList = [];
 
   final List<String> _filterVision = [];
   final List<String> _filterRarity = [];
@@ -54,14 +55,15 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     _interstitialAd?.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     bannerAd = _initBannerAd();
     bannerAd.load();
     _createInterstitialAd();
@@ -188,50 +190,11 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     }
 
     if (isFilterCategory) {
-      List<CharModel> filteredCharsList = <CharModel>[];
-      // filteredCharsList = charsData;
-
-      if (_filterRarity.isNotEmpty && _filterRarity.length < 2) {
-        for (int i = 0; i < _filterRarity.length; i++) {
-          for (int j = 0; j < charsData.length; j++) {
-            if (charsData[j].rarity.toString().toLowerCase() ==
-                _filterRarity[i]) {
-              filteredCharsList.add(charsData[j]);
-            } else {
-              filteredCharsList.removeWhere((element) =>
-                  element.rarity.toString().toLowerCase() != _filterRarity[i]);
-            }
-          }
-        }
+      if (filteredCharList.isNotEmpty) {
+        _filteredList = filteredCharList.toSet().toList();
       } else {
-        filteredCharsList = charsData;
+        _filteredList = charsData;
       }
-
-      if (_filterVision.isNotEmpty) {
-        for (int i = 0; i < _filterVision.length; i++) {
-          for (int j = 0; j < charsData.length; j++) {
-            if (charsData[j].vision!.toLowerCase() ==
-                _filterVision[i].toLowerCase()) {
-              if (!filteredCharsList.contains(charsData[j])) {
-                filteredCharsList.add(charsData[j]);
-              }
-            } else {
-              if (filteredCharsList.contains(charsData[j])) {
-                filteredCharsList.removeWhere((element) =>
-                    element.vision.toString().toLowerCase() !=
-                    _filterVision[i].toLowerCase());
-              }
-            }
-            // else {
-            //   filteredCharsList.removeWhere((element) =>
-            //       element.vision.toString().toLowerCase() !=
-            //       _filterVision[i].toLowerCase());
-            // }
-          }
-        }
-      }
-
-      _filteredList = filteredCharsList.toSet().toList();
     }
 
     if (filter.isNotEmpty && _filteredList.isEmpty && !isFilterCategory) {
@@ -264,6 +227,20 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
             isAdBannerSuccess ? _createBannerAd(bannerAd) : null,
       );
     }
+  }
+
+  List<CharModel> getBasedOnRarity(List<CharModel> inputList, String rarity) {
+    List<CharModel> outputList = inputList
+        .where((element) => element.rarity.toString().toLowerCase() == rarity)
+        .toList();
+    return outputList;
+  }
+
+  List<CharModel> getBasedOnVision(List<CharModel> inputList, String vision) {
+    List<CharModel> outputList = inputList
+        .where((element) => element.vision.toString().toLowerCase() == vision)
+        .toList();
+    return outputList;
   }
 
   Widget _myFab() {
@@ -354,34 +331,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     ItemFilter("4 stars", "4", AppColor.rarity4, false),
   ];
 
-  List<Widget> filterVisionList(Function newSetState) {
-    List<Widget> chips = [];
-    for (int i = 0; i < _visionList.length; i++) {
-      Widget item = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 5),
-        child: FilterChip(
-          label: Text(_visionList[i].label),
-          labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
-          backgroundColor: _visionList[i].color,
-          selected: _visionList[i].isSelected,
-          onSelected: (bool value) {
-            newSetState(() {
-              if (value == true) {
-                _filterVision.add(_visionList[i].value);
-              } else {
-                _filterVision
-                    .removeWhere((item) => item == _visionList[i].value);
-              }
-              _visionList[i].isSelected = value;
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
-  }
-
   List<Widget> filterRarityList(Function newSetState) {
     List<Widget> chips = [];
     for (int i = 0; i < _rarityList.length; i++) {
@@ -394,18 +343,70 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
           selected: _rarityList[i].isSelected,
           onSelected: (bool value) {
             newSetState(() {
-              if (value == true) {
-                _filterRarity.add(_rarityList[i].value);
-              } else {
-                _filterRarity
-                    .removeWhere((item) => item == _rarityList[i].value);
-              }
-              if (_filterRarity.length == 2) {
-                _rarityList[0].isSelected = true;
-                _rarityList[1].isSelected = true;
-                return;
-              }
               _rarityList[i].isSelected = value;
+            });
+
+            setState(() {
+              isFilterCategory = true;
+              if (_rarityList[i].isSelected) {
+                if (filteredCharList.isNotEmpty) {
+                  filteredCharList ==
+                      getBasedOnRarity(filteredCharList, _rarityList[i].value);
+                  filteredCharList.removeWhere((element) =>
+                      element.rarity.toString().toLowerCase() !=
+                      _rarityList[i].value);
+                } else {
+                  filteredCharList +=
+                      getBasedOnRarity(charsData, _rarityList[i].value);
+                }
+              } else {
+                filteredCharList.removeWhere((element) =>
+                    element.rarity.toString().toLowerCase() ==
+                    _rarityList[i].value);
+              }
+            });
+          },
+        ),
+      );
+      chips.add(item);
+    }
+    return chips;
+  }
+
+  List<Widget> filterVisionList(Function newSetState) {
+    List<Widget> chips = [];
+    for (int i = 0; i < _visionList.length; i++) {
+      Widget item = Padding(
+        padding: const EdgeInsets.only(left: 10, right: 5),
+        child: FilterChip(
+          label: Text(_visionList[i].label),
+          labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+          backgroundColor: _visionList[i].color,
+          selected: _visionList[i].isSelected,
+          onSelected: (bool value) {
+            newSetState(() {
+              _visionList[i].isSelected = value;
+            });
+
+            setState(() {
+              isFilterCategory = true;
+
+              if (_visionList[i].isSelected) {
+                if (filteredCharList.isNotEmpty) {
+                  filteredCharList ==
+                      getBasedOnVision(filteredCharList, _visionList[i].value);
+                  filteredCharList.removeWhere((element) =>
+                      element.vision.toString().toLowerCase() !=
+                      _visionList[i].value);
+                } else {
+                  filteredCharList +=
+                      getBasedOnVision(charsData, _visionList[i].value);
+                }
+              } else {
+                filteredCharList.removeWhere((element) =>
+                    element.vision.toString().toLowerCase() ==
+                    _visionList[i].value);
+              }
             });
           },
         ),
@@ -459,8 +460,8 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
                           width: double.infinity,
                           child: FilledButton.tonal(
                               onPressed: () {
-                                debugPrint('_filterRarity: ${_filterRarity}');
-                                debugPrint('_filterVision: ${_filterVision}');
+                                debugPrint('_filterRarity: $_filterRarity');
+                                debugPrint('_filterVision: $_filterVision');
                                 if (_filterVision.isNotEmpty ||
                                     _filterRarity.isNotEmpty) {
                                   setState(() {
