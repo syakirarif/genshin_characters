@@ -53,6 +53,10 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   late BannerAd bannerAd;
 
+  List<ItemFilter> _visionList = ItemFilter.initVisionList();
+
+  List<ItemFilter> _rarityList = ItemFilter.initRarityList();
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -255,6 +259,9 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
           color: Colors.white,
         ),
         onPressed: () {
+          setState(() {
+            resetFilter();
+          });
           _showBottomSheet();
         });
   }
@@ -317,20 +324,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     );
   }
 
-  final List<ItemFilter> _visionList = [
-    ItemFilter("Dendro", "dendro", Colors.green, false),
-    ItemFilter("Anemo", "anemo", Colors.blueGrey, false),
-    ItemFilter("Cryo", "cryo", Colors.deepOrange, false),
-    ItemFilter("Electro", "electro", Colors.cyan, false),
-    ItemFilter("Pyro", "pyro", Colors.teal, false),
-    ItemFilter("Any", "any", Colors.teal, false),
-  ];
-
-  final List<ItemFilter> _rarityList = [
-    ItemFilter("5 stars", "5", AppColor.rarity5, false),
-    ItemFilter("4 stars", "4", AppColor.rarity4, false),
-  ];
-
   List<Widget> filterRarityList(Function newSetState) {
     List<Widget> chips = [];
     for (int i = 0; i < _rarityList.length; i++) {
@@ -346,24 +339,25 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
               _rarityList[i].isSelected = value;
             });
 
+            if (_rarityList[i].isSelected == true) {
+              if (filteredCharList.isNotEmpty) {
+                filteredCharList ==
+                    getBasedOnRarity(filteredCharList, _rarityList[i].value);
+                filteredCharList.removeWhere((element) =>
+                    element.rarity.toString().toLowerCase() !=
+                    _rarityList[i].value);
+              } else {
+                filteredCharList +=
+                    getBasedOnRarity(charsData, _rarityList[i].value);
+              }
+            } else {
+              filteredCharList.removeWhere((element) =>
+                  element.rarity.toString().toLowerCase() ==
+                  _rarityList[i].value);
+            }
+
             setState(() {
               isFilterCategory = true;
-              if (_rarityList[i].isSelected) {
-                if (filteredCharList.isNotEmpty) {
-                  filteredCharList ==
-                      getBasedOnRarity(filteredCharList, _rarityList[i].value);
-                  filteredCharList.removeWhere((element) =>
-                      element.rarity.toString().toLowerCase() !=
-                      _rarityList[i].value);
-                } else {
-                  filteredCharList +=
-                      getBasedOnRarity(charsData, _rarityList[i].value);
-                }
-              } else {
-                filteredCharList.removeWhere((element) =>
-                    element.rarity.toString().toLowerCase() ==
-                    _rarityList[i].value);
-              }
             });
           },
         ),
@@ -388,25 +382,25 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
               _visionList[i].isSelected = value;
             });
 
+            if (_visionList[i].isSelected) {
+              if (filteredCharList.isNotEmpty) {
+                filteredCharList ==
+                    getBasedOnVision(filteredCharList, _visionList[i].value);
+                filteredCharList.removeWhere((element) =>
+                    element.vision.toString().toLowerCase() !=
+                    _visionList[i].value);
+              } else {
+                filteredCharList +=
+                    getBasedOnVision(charsData, _visionList[i].value);
+              }
+            } else {
+              filteredCharList.removeWhere((element) =>
+                  element.vision.toString().toLowerCase() ==
+                  _visionList[i].value);
+            }
+
             setState(() {
               isFilterCategory = true;
-
-              if (_visionList[i].isSelected) {
-                if (filteredCharList.isNotEmpty) {
-                  filteredCharList ==
-                      getBasedOnVision(filteredCharList, _visionList[i].value);
-                  filteredCharList.removeWhere((element) =>
-                      element.vision.toString().toLowerCase() !=
-                      _visionList[i].value);
-                } else {
-                  filteredCharList +=
-                      getBasedOnVision(charsData, _visionList[i].value);
-                }
-              } else {
-                filteredCharList.removeWhere((element) =>
-                    element.vision.toString().toLowerCase() ==
-                    _visionList[i].value);
-              }
             });
           },
         ),
@@ -414,6 +408,15 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
       chips.add(item);
     }
     return chips;
+  }
+
+  void resetFilter() {
+    isFilterCategory = false;
+    _filterRarity.clear();
+    _filterVision.clear();
+    filteredCharList.clear();
+    _rarityList = ItemFilter.initRarityList();
+    _visionList = ItemFilter.initVisionList();
   }
 
   void _showBottomSheet() {
@@ -458,23 +461,28 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
                         ),
                         SizedBox(
                           width: double.infinity,
-                          child: FilledButton.tonal(
+                          child: FilledButton(
+                              style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll<Color>(
+                                        Colors.blue),
+                              ),
                               onPressed: () {
-                                debugPrint('_filterRarity: $_filterRarity');
-                                debugPrint('_filterVision: $_filterVision');
-                                if (_filterVision.isNotEmpty ||
-                                    _filterRarity.isNotEmpty) {
-                                  setState(() {
-                                    isFilterCategory = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isFilterCategory = false;
-                                  });
-                                }
+                                // debugPrint('_filterRarity: $_filterRarity');
+                                // debugPrint('_filterVision: $_filterVision');
+                                // if (_filterVision.isNotEmpty ||
+                                //     _filterRarity.isNotEmpty) {
+                                //   setState(() {
+                                //     isFilterCategory = true;
+                                //   });
+                                // } else {
+                                //   setState(() {
+                                //     isFilterCategory = false;
+                                //   });
+                                // }
                                 Navigator.of(context).pop();
                               },
-                              child: const Text('Apply Filter')),
+                              child: const Text('Close')),
                         )
                       ],
                     );

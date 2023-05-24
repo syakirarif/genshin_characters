@@ -277,7 +277,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
                               }
                             }
                           },
-                          child: const Text('GO TO REDEEM PAGE')),
+                          child: const Text('REDEEM NOW')),
                     )
               ],
             ),
