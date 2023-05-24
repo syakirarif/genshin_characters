@@ -50,6 +50,7 @@ dependencies:
   intl: ^0.18.1
   google_sign_in: ^6.1.0
   expandable_sliver_list: ^4.1.0
+  upgrader: ^6.5.0
 
 dev_dependencies:
   flutter_test:
