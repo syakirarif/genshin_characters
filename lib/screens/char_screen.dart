@@ -382,7 +382,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
               _visionList[i].isSelected = value;
             });
 
-            if (_visionList[i].isSelected) {
+            if (_visionList[i].isSelected == true) {
               if (filteredCharList.isNotEmpty) {
                 filteredCharList ==
                     getBasedOnVision(filteredCharList, _visionList[i].value);
