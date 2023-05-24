@@ -3,9 +3,12 @@ import 'package:genshin_characters/model/code_model.dart';
 import 'package:genshin_characters/utils/functions.dart';
 
 class ItemCode extends StatefulWidget {
-  const ItemCode({required this.dataModel, Key? key}) : super(key: key);
+  const ItemCode(
+      {required this.dataModel, required this.isNotClaimed, Key? key})
+      : super(key: key);
 
   final CodeModel dataModel;
+  final bool isNotClaimed;
 
   @override
   State<ItemCode> createState() => _ItemCodeState();
@@ -16,12 +19,14 @@ class _ItemCodeState extends State<ItemCode> {
 
   @override
   Widget build(BuildContext context) {
+    bool isNotClaimed = widget.isNotClaimed;
+
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
+          color: isNotClaimed ? Colors.white : Colors.grey.shade100,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
@@ -74,9 +79,9 @@ class _ItemCodeState extends State<ItemCode> {
                     child: Center(
                         child: isNewCode
                             ? Icon(
-                                Icons.fiber_new,
-                                color: Colors.red.shade700,
-                              )
+                          Icons.fiber_new,
+                          color: Colors.red.shade700,
+                        )
                             : null)),
               )
             ],

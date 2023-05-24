@@ -109,9 +109,9 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
         // Called when an ad request failed.
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           // Dispose the ad here to free resources.
-          setState(() {
-            isAdBannerSuccess = false;
-          });
+          // setState(() {
+          //   isAdBannerSuccess = false;
+          // });
           ad.dispose();
           //print('Ad failed to load: $error');
         },
