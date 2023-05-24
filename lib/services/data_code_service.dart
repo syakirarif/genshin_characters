@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:genshin_characters/model/code_claimed_model.dart';
 import 'package:genshin_characters/model/code_model.dart';
 
 class DataCodeService {
@@ -6,6 +7,22 @@ class DataCodeService {
       .collection('games')
       .doc('genshin')
       .collection('codes');
+
+  final _collectionUsers = FirebaseFirestore.instance.collection('users');
+
+  Future markCodeAsClaimed({required String codeId, required String uid}) {
+    return _collectionUsers
+        .doc(uid)
+        .collection('redeemed_codes')
+        .doc(codeId)
+        .set({
+      'code_id': codeId,
+      'uid': uid,
+      'is_claimed': true,
+      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
 
   List<CodeModel> _codeListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((e) {
@@ -26,8 +43,31 @@ class DataCodeService {
   }
 
   Stream<List<CodeModel>> get codes {
-    return _collectionGenshinCodes.snapshots().map((event) {
+    return _collectionGenshinCodes
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map((event) {
       return _codeListFromSnapshot(event);
+    });
+  }
+
+  List<CodeClaimedModel> _codeClaimedSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((e) {
+      Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+      return CodeClaimedModel(
+          codeId: data['code_id'],
+          isClaimed: data['is_claimed'],
+          uid: data['uid']);
+    }).toList();
+  }
+
+  Stream<List<CodeClaimedModel>> getClaimedCodes({required String uid}) {
+    return _collectionUsers
+        .doc(uid)
+        .collection('redeemed_codes')
+        .snapshots()
+        .map((event) {
+      return _codeClaimedSnapshot(event);
     });
   }
 }

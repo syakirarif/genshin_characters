@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:genshin_characters/screens/user_info_screen.dart';
 import 'package:genshin_characters/services/authentication.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -19,7 +18,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
           ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
             )
           : OutlinedButton(
               style: ButtonStyle(
@@ -43,13 +42,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 });
 
                 if (user != null) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
-                        user: user,
-                      ),
-                    ),
-                  );
+                  // Navigator.of(context).pushReplacement(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => UserInfoScreen(
+                  //       user: user,
+                  //     ),
+                  //   ),
+                  // );
+                  // Navigator.of(context).pop();
                 }
               },
               child: Padding(

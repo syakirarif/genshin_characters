@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
+import 'package:genshin_characters/model/code_claimed_model.dart';
 import 'package:genshin_characters/model/code_model.dart';
 import 'package:genshin_characters/screens/profile_screen.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
@@ -29,6 +31,8 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
   bool isAdInterstitialLoaded = false;
 
   late BannerAd bannerAd;
+
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -152,6 +156,8 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('UID: ${user?.uid}');
+
     return Scaffold(
       appBar: FRAppBar.defaultAppBar(context, title: 'Genshin Codes', actions: [
         IconButton(
@@ -234,55 +240,161 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         context: context,
         isScrollControlled: true,
-        builder: (context) => Container(
-          padding: const EdgeInsets.all(22),
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  '${data.code}',
-                  style: const TextStyle(fontSize: 16),
+        builder: (context) =>
+            Container(
+              padding: const EdgeInsets.all(22),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery
+                        .of(context)
+                        .viewInsets
+                        .bottom),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      '${data.code}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('${data.codeDetail}',
+                        style: const TextStyle(fontSize: 12)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    _builderButtonRedeem(data: data),
+                  ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text('${data.codeDetail}',
-                    style: const TextStyle(fontSize: 12)),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: double.infinity,
+              ),
+            ));
+  }
+
+  Widget _builderButtonRedeem({required CodeModel data}) {
+    return StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, authSnapshot) {
+          if (authSnapshot.data == null) {
+            return _buttonRedeem1(data: data);
+          } else {
+            return _buttonRedeem2(data: data);
+          }
+        });
+  }
+
+  Widget _buttonRedeem1({required CodeModel data}) {
+    return Row(
+      children: [
+        Expanded(
+          child: FilledButton(
+              style: ButtonStyle(
+                backgroundColor:
+                MaterialStatePropertyAll<Color>(Colors.green.shade700),
+              ),
+              onPressed: () async {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (builder) => const ProfileScreen()));
+              },
+              child: const Text(
+                'Login to Record Your History', textAlign: TextAlign.center,)),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: FilledButton(
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+              ),
+              onPressed: () {
+                if (kIsWeb) {
+                  moveToRedeemPage(data: data);
+                } else {
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    if (isAdInterstitialLoaded) {
+                      _showInterstitialAd(data: data);
+                    } else {
+                      moveToRedeemPage(data: data);
+                    }
+                  } else {
+                    moveToRedeemPage(data: data);
+                  }
+                }
+              },
+              child: const Text('REDEEM NOW')),
+        )
+      ],
+    );
+  }
+
+  Widget _buttonRedeem2({required CodeModel data}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        StreamBuilder(
+            stream: DataCodeService().getClaimedCodes(uid: user!.uid),
+            builder: (context, AsyncSnapshot<List<CodeClaimedModel>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+
+              if (snapshot.data != null) {
+                final listClaimedCodes =
+                snapshot.data as List<CodeClaimedModel>;
+                final contain = listClaimedCodes
+                    .where((element) => element.codeId == data.codeId);
+                final isNotClaimed = (contain.isEmpty) ? true : false;
+
+                if (isNotClaimed) {
+                  return Expanded(
+                    child: FilledButton(
+                        style: const ButtonStyle(
+                          backgroundColor:
+                          MaterialStatePropertyAll<Color>(Colors.black45),
+                        ),
+                        onPressed: () async {
+                          await DataCodeService().markCodeAsClaimed(
+                              codeId: data.codeId!, uid: user!.uid);
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
+                        child: const Text('Mark as Claimed')),
+                  );
+                } else {
+                  return const Expanded(
                       child: FilledButton(
-                          style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            if (kIsWeb) {
-                              moveToRedeemPage(data: data);
-                            } else {
-                              if (Platform.isAndroid || Platform.isIOS) {
-                                if (isAdInterstitialLoaded) {
-                                  _showInterstitialAd(data: data);
-                                } else {
-                                  moveToRedeemPage(data: data);
-                                }
-                              } else {
-                                moveToRedeemPage(data: data);
-                              }
-                            }
-                          },
-                          child: const Text('REDEEM NOW')),
-                    )
-              ],
-            ),
-          ),
-        ));
+                        onPressed: null,
+                        child: Text('Already Claimed'),
+                      ));
+                }
+              } else {
+                return Container();
+              }
+            }),
+        const SizedBox(width: 20),
+        Expanded(
+          child: FilledButton(
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+              ),
+              onPressed: () {
+                if (kIsWeb) {
+                  moveToRedeemPage(data: data);
+                } else {
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    if (isAdInterstitialLoaded) {
+                      _showInterstitialAd(data: data);
+                    } else {
+                      moveToRedeemPage(data: data);
+                    }
+                  } else {
+                    moveToRedeemPage(data: data);
+                  }
+                }
+              },
+              child: const Text('REDEEM NOW')),
+        )
+      ],
+    );
   }
 
   Widget _buildPopularItem(BuildContext context, int index) {
