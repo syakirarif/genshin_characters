@@ -13,6 +13,9 @@ class WebViewStack extends StatefulWidget {
 class _WebViewStackState extends State<WebViewStack> {
   var loadingPercentage = 0;
 
+  String webUrlSecurityDone =
+      'https://account.hoyoverse.com/security.html?complete=1';
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,9 @@ class _WebViewStackState extends State<WebViewStack> {
           });
         },
         onPageFinished: (url) {
+          if (url == webUrlSecurityDone) {
+            widget.controller.goBack();
+          }
           setState(() {
             loadingPercentage = 100;
           });
