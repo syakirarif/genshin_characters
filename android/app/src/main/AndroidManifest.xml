@@ -41,8 +41,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-       <meta-data
-           android:name="com.google.android.gms.ads.APPLICATION_ID"
-           android:value="ca-app-pub-9167080444329708~3676240728"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9167080444329708~3676240728" />
+
+        <!-- A custom Android Notification Channel to deliver FCM notifications on a non-default channel -->
+        <meta-data
+            android:name="com.google.firebase.messaging.general"
+            android:value="general" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.redeem_code"
+            android:value="redeem_code" />
+
     </application>
 </manifest>
