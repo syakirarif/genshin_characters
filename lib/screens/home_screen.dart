@@ -75,22 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    checkPermission();
-
-    if (!_isAuthorized) {
-      requestPermission();
-    }
-
-    // requestPermission();
-
-    // await FirebaseMessaging.instance.requestPermission(
-    //   announcement: true,
-    //   carPlay: true,
-    //   criticalAlert: true,
-    // );
-
-    // _isAndroidPermissionGranted();
-    // _requestPermissions();
+    // checkPermission();
+    //
+    // if (!_isAuthorized) {
+    //   requestPermission();
+    // }
 
     FirebaseMessaging.instance.getInitialMessage().then(
           (value) => setState(
@@ -230,36 +219,6 @@ class _HomeScreenState extends State<HomeScreen> {
     debugPrint('requestPermission: ${settings.authorizationStatus.toString()}');
   }
 
-  Future<void> _requestPermissions() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-    } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
-
-      final bool? granted = await androidImplementation?.requestPermission();
-      setState(() {
-        _notificationsEnabled = granted ?? false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     debugPrint('notifications enabled: $_notificationsEnabled');
@@ -283,11 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: const Color(0xFF212121),
         unselectedItemColor: const Color(0xFF9E9E9E),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _requestPermissions();
-          },
-          child: Text('test')),
     );
   }
 }

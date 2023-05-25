@@ -67,7 +67,7 @@ class _CharsDetail extends State<CharsDetail> {
   Widget build(BuildContext context) {
     final BannerAd myBanner = BannerAd(
       // adUnitId: adUnitIdBanner,
-      adUnitId: constants_key.adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBannerCharsDetailBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

@@ -1,7 +1,16 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:genshin_characters/components/app_bar.dart';
+import 'package:genshin_characters/screens/profile_screen.dart';
+import 'package:genshin_characters/services/authentication.dart';
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
+import 'package:genshin_characters/utils/functions.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -12,6 +21,7 @@ class ProfileOption {
   String title;
   String icon;
   Color? titleColor;
+
   ProfileOptionTap? onClick;
   Widget? trailing;
 
@@ -45,68 +55,274 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   static _profileIcon(String last) => 'assets/icons/profile/$last';
 
-  bool _notificationsEnabled = false;
+  bool _notificationsGranted = false;
 
-  bool _isDark = false;
+  bool _isSigningOut = false;
+  bool _isLoadingSubs = false;
+  bool _isLoadingPermission = false;
 
-  get datas => <ProfileOption>[
-        ProfileOption.arrow(
-            title: 'Notification',
-            icon: _profileIcon('notification@2x.png'),
-            onClick: () {
-              _requestPermissions();
-            }),
-        _darkModel(),
-        ProfileOption(
-          title: 'Logout',
-          icon: _profileIcon('logout@2x.png'),
-          titleColor: const Color(0xFFF75555),
-        ),
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  bool isSubscribedToRedeemGenshin = false;
+
+  String subsRedeemGenshin = 'subscribe-redeem-genshin';
+
+  bool isAdBannerLoaded = false;
+
+  late BannerAd bannerAd;
+
+  get datasLoggedIn => <ProfileOption>[
+        _permissionOption(),
+        _redeemNotif(),
+        _buttonLogout(),
       ];
 
-  _darkModel() => ProfileOption(
-      title: 'Dark Mode',
-      icon: _profileIcon('show@2x.png'),
-      trailing: Switch(
-        value: _isDark,
-        activeColor: const Color(0xFF212121),
-        onChanged: (value) {
-          setState(() {
-            _isDark = !_isDark;
-          });
-        },
-      ));
+  get datasNotLoggedIn => <ProfileOption>[
+        _permissionOption(),
+        _redeemNotif(),
+      ];
+
+  _redeemNotif() => ProfileOption(
+      title: 'Redeem Code Notification',
+      icon: _profileIcon('info_square@2x.png'),
+      trailing: _isLoadingSubs
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+              ),
+            )
+          : Switch(
+              value: isSubscribedToRedeemGenshin,
+              activeColor: const Color(0xFF212121),
+              onChanged: (value) async {
+                setState(() {
+                  _isLoadingSubs = true;
+                });
+
+                final SharedPreferences prefs = await _prefs;
+                if (!isSubscribedToRedeemGenshin) {
+                  await FirebaseMessaging.instance
+                      .subscribeToTopic('redeem-genshin');
+                  prefs.setBool(subsRedeemGenshin, true);
+                  if (context.mounted) {
+                    showSnackBar(
+                        context, 'You will receive redeem codes notification.');
+                  }
+                } else {
+                  await FirebaseMessaging.instance
+                      .unsubscribeFromTopic('redeem-genshin');
+                  prefs.setBool(subsRedeemGenshin, false);
+                  if (context.mounted) {
+                    showSnackBar(context,
+                        'You will not receive redeem codes notification anymore.');
+                  }
+                }
+
+                setState(() {
+                  isSubscribedToRedeemGenshin = !isSubscribedToRedeemGenshin;
+                  _isLoadingSubs = false;
+                });
+              },
+            ));
+
+  _permissionOption() => ProfileOption(
+      title: 'Notification Permission',
+      icon: _profileIcon('notification@2x.png'),
+      trailing: SizedBox(
+        width: 150,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            _notificationsGranted
+                ? const Text(
+                    'Allowed',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        color: Colors.blue),
+                  )
+                : const Text(
+                    'Disabled',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        color: Colors.redAccent),
+                  ),
+            const SizedBox(width: 16),
+            _notificationsGranted
+                ? Container()
+                : Image.asset('assets/icons/profile/arrow_right@2x.png',
+                    scale: 2)
+          ],
+        ),
+      ),
+      onClick: () async {
+        // _notificationsGranted ? null : await _requestPermissions();
+        await requestPermission();
+      });
+
+  _buttonLogout() => ProfileOption.arrow(
+      title: 'Logout',
+      icon: _profileIcon('logout@2x.png'),
+      titleColor: const Color(0xFFF75555),
+      onClick: () async {
+        await showDialog(
+            context: context, builder: (builder) => _confirmLogout());
+      });
+
+  AlertDialog _confirmLogout() {
+    return AlertDialog(
+      title: const Text('Konfirmasi Logout'),
+      content: const Text('Apakah Anda yakin untuk logout?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Batal')),
+        TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(true);
+              setState(() {
+                _isSigningOut = true;
+              });
+              await Authentication.signOut(context: context);
+              setState(() {
+                _isSigningOut = false;
+              });
+            },
+            child: const Text('Logout')),
+      ],
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // const SliverList(
-          //   delegate: SliverChildListDelegate.fixed([
-          //     Padding(
-          //       padding: EdgeInsets.only(top: 30),
-          //       child: ProfileHeader(),
-          //     ),
-          //   ]),
-          // ),
-          _buildBody(),
-        ],
+  void initState() {
+    _checkPermission();
+    _checkSubscription();
+    bannerAd = _initBannerAd();
+    bannerAd.load();
+    super.initState();
+  }
+
+  Future<void> _checkSubscription() async {
+    final SharedPreferences prefs = await _prefs;
+    setState(() {
+      isSubscribedToRedeemGenshin = (prefs.getBool(subsRedeemGenshin) ?? false);
+    });
+  }
+
+  BannerAd _initBannerAd() {
+    return BannerAd(
+      adUnitId: constants_key.adUnitIdBannerSettingsBanner,
+      size: AdSize.largeBanner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) {
+          setState(() {
+            isAdBannerLoaded = true;
+          });
+          // print('Ad loaded.')
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          // setState(() {
+          //   isAdBannerLoaded = false;
+          // });
+          ad.dispose();
+          //print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => {
+          //print('Ad opened.')
+        },
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => {
+          //print('Ad closed.')
+        },
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => {
+          // print('Ad impression.')
+        },
       ),
     );
   }
 
-  Widget _buildBody() {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: FRAppBar.defaultAppBar(context, title: 'Settings'),
+      body: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, authSnapshot) {
+          bool isLogin = authSnapshot.data != null;
+
+          return _isSigningOut
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.blue,
+                ))
+              : CustomScrollView(
+                  slivers: [
+                    const SliverList(
+                      delegate: SliverChildListDelegate.fixed([
+                        Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: ProfileScreen(),
+                        ),
+                      ]),
+                    ),
+                    _buildBody(isLogin),
+                  ],
+                );
+        },
+      ),
+      bottomNavigationBar: isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
+    );
+  }
+
+  Widget _createBannerAd(BannerAd myBanner) {
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
+    return adContainer;
+  }
+
+  Widget _buildBody(bool isLoggedIn) {
     return SliverPadding(
-      padding: const EdgeInsets.only(top: 10.0),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final data = datas[index];
-            return _buildOption(context, index, data);
-          },
-          childCount: datas.length,
-        ),
+      padding: const EdgeInsets.all(0),
+      sliver: (isLoggedIn) ? _buildListLoggedIn() : _buildListNotLoggedIn(),
+    );
+  }
+
+  Widget _buildListLoggedIn() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final data = datasLoggedIn[index];
+          return _buildOption(context, index, data);
+        },
+        childCount: datasLoggedIn.length,
+      ),
+    );
+  }
+
+  Widget _buildListNotLoggedIn() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final data = datasNotLoggedIn[index];
+          return _buildOption(context, index, data);
+        },
+        childCount: datasNotLoggedIn.length,
       ),
     );
   }
@@ -120,8 +336,32 @@ class _SettingScreenState extends State<SettingScreen> {
             fontWeight: FontWeight.w500, fontSize: 18, color: data.titleColor),
       ),
       trailing: data.trailing,
-      onTap: () {},
+      onTap: () {
+        data.onClick?.call();
+      },
     );
+  }
+
+  Future<void> requestPermission() async {
+    setState(() {
+      _isLoadingPermission = true;
+    });
+
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
+      announcement: true,
+      carPlay: true,
+      criticalAlert: true,
+    );
+
+    setState(() {
+      _notificationsGranted =
+          settings.authorizationStatus == AuthorizationStatus.authorized;
+
+      _isLoadingPermission = false;
+    });
+
+    debugPrint('requestPermission: ${settings.authorizationStatus.toString()}');
   }
 
   Future<void> _requestPermissions() async {
@@ -149,7 +389,26 @@ class _SettingScreenState extends State<SettingScreen> {
 
       final bool? granted = await androidImplementation?.requestPermission();
       setState(() {
-        _notificationsEnabled = granted ?? false;
+        _notificationsGranted = granted ?? false;
+      });
+    }
+  }
+
+  Future<void> _checkPermission() async {
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.getNotificationSettings();
+
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      if (context.mounted) {
+        showSnackBar(
+            context, 'Please allow the permission to receive notifications.');
+      }
+      setState(() {
+        _notificationsGranted = false;
+      });
+    } else {
+      setState(() {
+        _notificationsGranted = true;
       });
     }
   }

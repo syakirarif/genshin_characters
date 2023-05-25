@@ -66,7 +66,7 @@ class _CharsList extends State<CharsList> {
   @override
   Widget build(BuildContext context) {
     final BannerAd myBanner = BannerAd(
-      adUnitId: constants_key.adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBannerCharsBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -245,7 +245,7 @@ class _CharsList extends State<CharsList> {
 
     void _createInterstitialAd(int index) {
       InterstitialAd.load(
-        adUnitId: constants_key.adUnitIdInterstitial,
+        adUnitId: constants_key.adUnitIdBannerCharsInterstitial,
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {

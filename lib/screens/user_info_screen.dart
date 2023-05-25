@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:genshin_characters/screens/profile_screen.dart';
-import 'package:genshin_characters/services/authentication.dart';
+import 'package:genshin_characters/screens/setting_screen.dart';
 import 'package:genshin_characters/utils/custom_colors.dart';
 
 class UserInfoScreen extends StatefulWidget {
@@ -21,7 +20,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   Route _routeToSignInScreen() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) => SettingScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(-1.0, 0.0);
         var end = Offset.zero;
@@ -47,6 +46,10 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return buildProfile2();
+  }
+
+  Widget buildProfile2() {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -55,9 +58,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           bottom: 20.0,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(),
             _user.photoURL != null
                 ? ClipOval(
                     child: Material(
@@ -81,77 +82,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       ),
                     ),
                   ),
-            SizedBox(height: 16.0),
-            Text(
-              'Hello',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 26,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              _user.displayName!,
-              style: TextStyle(
-                color: CustomColors.firebaseYellow,
-                fontSize: 26,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              '( ${_user.email!} )',
-              style: TextStyle(
-                color: CustomColors.firebaseOrange,
-                fontSize: 20,
-                letterSpacing: 0.5,
-              ),
-            ),
-            SizedBox(height: 24.0),
-            Text(
-              'You are now signed in using your Google account. To sign out of your account click the "Sign Out" button below.',
+            const SizedBox(height: 30),
+            Text(_user.displayName!,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+            const SizedBox(height: 8),
+            Text(_user.email!,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const SizedBox(height: 20),
+            const Text(
+              'You are now signed in using your Google account, so you can record your code redemption history.',
+              textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black, fontSize: 14, letterSpacing: 0.2),
             ),
             SizedBox(height: 16.0),
-            _isSigningOut
-                ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  )
-                : ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        Colors.redAccent,
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _isSigningOut = true;
-                      });
-                      await Authentication.signOut(context: context);
-                      setState(() {
-                        _isSigningOut = false;
-                      });
-                      Navigator.of(context)
-                          .pushReplacement(_routeToSignInScreen());
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                      child: Text(
-                        'Sign Out',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ),
-                  ),
+            const SizedBox(height: 20),
+            Container(
+              color: const Color(0xFFEEEEEE),
+              height: 1,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+            )
           ],
         ),
       ),

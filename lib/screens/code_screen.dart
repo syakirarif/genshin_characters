@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/model/code_claimed_model.dart';
 import 'package:genshin_characters/model/code_model.dart';
-import 'package:genshin_characters/screens/profile_screen.dart';
+import 'package:genshin_characters/screens/setting_screen.dart';
 import 'package:genshin_characters/screens/web_view_screen.dart';
 import 'package:genshin_characters/services/data_code_service.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
@@ -59,7 +59,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBanner,
+      adUnitId: constants_key.adUnitIdBannerCodesBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -97,7 +97,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
 
   void _createInterstitialAd() async {
     await InterstitialAd.load(
-      adUnitId: constants_key.adUnitIdInterstitial,
+      adUnitId: constants_key.adUnitIdBannerCodesInterstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
@@ -162,12 +162,12 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
       appBar: FRAppBar.defaultAppBar(context, title: 'Genshin Codes', actions: [
         IconButton(
           icon: const Icon(
-            Icons.account_circle_outlined,
+            Icons.settings,
             size: 32,
           ),
           onPressed: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (builder) => ProfileScreen()));
+                .push(MaterialPageRoute(builder: (builder) => SettingScreen()));
           },
         ),
       ]),
@@ -313,7 +313,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
               onPressed: () async {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (builder) => const ProfileScreen()));
+                    builder: (builder) => const SettingScreen()));
               },
               child: const Text(
                 'Login to Record Your History',
