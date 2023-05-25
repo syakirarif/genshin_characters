@@ -10,6 +10,7 @@ import 'package:genshin_characters/screens/home_screen.dart';
 import 'package:genshin_characters/utils/firebase_options.dart';
 import 'package:genshin_characters/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ReceivedNotification {
@@ -111,6 +112,8 @@ const String navigationActionId = 'id_3';
 //   );
 //   isFlutterLocalNotificationsInitialized = true;
 // }
+
+final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -216,7 +219,15 @@ void main() async {
   //   await setupFlutterNotifications();
   // }
 
-  await FirebaseMessaging.instance.subscribeToTopic('redeem-genshin');
+  String subsRedeemGenshin = 'subscribe-redeem-genshin';
+  final SharedPreferences prefs = await _prefs;
+  final bool isSubscribedToRedeemGenshin =
+      (prefs.getBool(subsRedeemGenshin) ?? false);
+
+  if (!isSubscribedToRedeemGenshin) {
+    await FirebaseMessaging.instance.subscribeToTopic('redeem-genshin');
+    prefs.setBool(subsRedeemGenshin, true);
+  }
 
   runApp(const MyApp());
 }
@@ -231,8 +242,8 @@ class MyApp extends StatelessWidget {
         theme: appTheme(),
         home: (Platform.isAndroid || Platform.isIOS)
             ? UpgradeAlert(
-            upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino),
-            child: const HomeScreen())
+                upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino),
+                child: const HomeScreen())
             : const HomeScreen());
   }
 }
