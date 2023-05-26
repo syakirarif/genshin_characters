@@ -214,7 +214,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
       );
     } else {
       return Scaffold(
-        floatingActionButton: _myFab(),
+        // floatingActionButton: _myFab(),
         appBar: appTopAppBar,
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
