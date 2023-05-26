@@ -12,7 +12,7 @@
         </intent>
     </queries>
     <application
-        android:label="Genshin Characters"
+        android:label="Genshin Redeemz"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
