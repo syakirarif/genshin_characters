@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:genshin_characters/screens/char_screen.dart';
 import 'package:genshin_characters/screens/code_screen.dart';
+import 'package:genshin_characters/screens/code_screen_full.dart';
 import 'package:genshin_characters/utils/image_loader.dart';
 import 'package:genshin_characters/utils/size_config.dart';
 
@@ -14,7 +13,8 @@ class TabbarItem {
   final IconData boldIcon;
   final String label;
 
-  TabbarItem({required this.lightIcon, required this.boldIcon, required this.label});
+  TabbarItem(
+      {required this.lightIcon, required this.boldIcon, required this.label});
 
   BottomNavigationBarItem item(bool isBold) {
     return BottomNavigationBarItem(
@@ -95,11 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       debugPrint('A new onMessageOpenedApp event was published!');
       debugPrint('RemoteMessage Data: ${message.data}');
-      // Navigator.pushNamed(
-      //   context,
-      //   '/message',
-      //   arguments: MessageArguments(message, true),
-      // );
+      _navigateToCodeFullScreen();
     });
 
     if (!kIsWeb) {
@@ -107,6 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     super.initState();
+  }
+
+  void _navigateToCodeFullScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const CodeScreenFull(),
+      ),
+    );
   }
 
   Future<void> setupFlutterNotifications() async {
@@ -154,75 +158,75 @@ class _HomeScreenState extends State<HomeScreen> {
     isFlutterLocalNotificationsInitialized = true;
   }
 
-  void showFlutterNotification(RemoteMessage message) {
+  final String groupKey = 'com.syakirarif.genshin_characters.REDEEM_CODE';
+
+  void showFlutterNotification(RemoteMessage message) async {
+    List<ActiveNotification>? activeNotifications =
+        await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.getActiveNotifications();
+
     RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
+    // AndroidNotification? android = message.notification?.android;
 
-    const String groupKey = 'com.syakirarif.genshin_characters.REDEEM_CODE';
+    if (activeNotifications != null && activeNotifications.isNotEmpty) {
+      List<String> lines =
+          activeNotifications.map((e) => e.title.toString()).toList();
 
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(channelRedeemCode.id, channelRedeemCode.name,
-            channelDescription: channelRedeemCode.description,
-            // icon: 'ic_stat_extension',
-            importance: Importance.max,
-            priority: Priority.high,
-            groupKey: groupKey);
-
-    if (notification != null && android != null && !kIsWeb) {
-      flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: androidNotificationDetails,
-        ),
+      InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
+        lines,
+        contentTitle: "${activeNotifications.length - 1} Updates",
+        summaryText: "${activeNotifications.length - 1} Updates",
       );
-    }
-  }
 
-  Future<void> _isAndroidPermissionGranted() async {
-    if (Platform.isAndroid) {
-      final bool granted = await flutterLocalNotificationsPlugin
-              .resolvePlatformSpecificImplementation<
-                  AndroidFlutterLocalNotificationsPlugin>()
-              ?.areNotificationsEnabled() ??
-          false;
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails(
+              channelRedeemCode.id, channelRedeemCode.name,
+              channelDescription: channelRedeemCode.description,
+              styleInformation: inboxStyleInformation,
+              icon: 'app_icon',
+              importance: Importance.max,
+              priority: Priority.high,
+              groupKey: groupKey);
 
-      setState(() {
-        _notificationsEnabled = granted;
-      });
-    }
-  }
+      NotificationDetails groupNotificationDetailsPlatformSpefics =
+          NotificationDetails(android: androidNotificationDetails);
 
-  Future<void> checkPermission() async {
-    NotificationSettings settings =
-        await FirebaseMessaging.instance.getNotificationSettings();
-
-    debugPrint(
-        'AuthorizationStatus: ${settings.authorizationStatus.toString()}');
-
-    if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      setState(() {
-        _isAuthorized = false;
-      });
+      if (notification != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          groupNotificationDetailsPlatformSpefics,
+        );
+      }
     } else {
-      setState(() {
-        _isAuthorized = true;
-      });
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails(
+              channelRedeemCode.id, channelRedeemCode.name,
+              channelDescription: channelRedeemCode.description,
+              icon: 'app_icon',
+              importance: Importance.max,
+              priority: Priority.high,
+              groupKey: groupKey);
+
+      NotificationDetails groupNotificationDetailsPlatformSpefics =
+          NotificationDetails(android: androidNotificationDetails);
+
+      if (notification != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          groupNotificationDetailsPlatformSpefics,
+        );
+      }
     }
-  }
-
-  Future<void> requestPermission() async {
-    NotificationSettings settings =
-        await FirebaseMessaging.instance.getNotificationSettings();
-
-    debugPrint('requestPermission: ${settings.authorizationStatus.toString()}');
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('notifications enabled: $_notificationsEnabled');
-
     SizeConfig().init(context);
     return Scaffold(
       body: screens[_select],

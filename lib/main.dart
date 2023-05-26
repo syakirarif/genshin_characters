@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:genshin_characters/screens/code_screen_full.dart';
 import 'package:genshin_characters/screens/home_screen.dart';
 import 'package:genshin_characters/utils/firebase_options.dart';
 import 'package:genshin_characters/utils/theme.dart';
@@ -212,28 +214,91 @@ void main() async {
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
 
+  AndroidNotificationChannelGroup channelGroup =
+      const AndroidNotificationChannelGroup(
+          'com.syakirarif.genshin_characters.REDEEM_CODE', 'redeem_code');
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannelGroup(channelGroup);
+
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // if (!kIsWeb) {
-  //   await setupFlutterNotifications();
-  // }
-
-  String subsRedeemGenshin = 'subscribe-redeem-genshin';
-  final SharedPreferences prefs = await _prefs;
-  final bool isSubscribedToRedeemGenshin =
-      (prefs.getBool(subsRedeemGenshin) ?? false);
-
-  if (!isSubscribedToRedeemGenshin) {
-    await FirebaseMessaging.instance.subscribeToTopic('redeem-genshin');
-    prefs.setBool(subsRedeemGenshin, true);
-  }
 
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    _configureSelectNotificationSubject();
+    _configureDidReceiveLocalNotificationSubject();
+    super.initState();
+  }
+
+  void _navigateToCodeFullScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const CodeScreenFull(),
+      ),
+    );
+  }
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationStream.stream.listen((String? payload) async {
+      debugPrint('selectNotificationStream.listen');
+      // await Navigator.of(context).push(MaterialPageRoute<void>(
+      //   builder: (BuildContext context) => const CodeScreenFull(),
+      // ));
+      _navigateToCodeFullScreen();
+    });
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      debugPrint('didReceiveLocalNotificationStream.listen');
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => CodeScreenFull(),
+                  ),
+                );
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    didReceiveLocalNotificationStream.close();
+    selectNotificationStream.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
