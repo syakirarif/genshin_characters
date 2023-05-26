@@ -24,6 +24,14 @@ class DataCodeService {
     });
   }
 
+  Future deleteMarkAsClaimed({required String codeId, required String uid}) {
+    return _collectionUsers
+        .doc(uid)
+        .collection('redeemed_codes')
+        .doc(codeId)
+        .delete();
+  }
+
   List<CodeModel> _codeListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((e) {
       Map<String, dynamic> data = e.data() as Map<String, dynamic>;
