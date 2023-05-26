@@ -1,35 +1,45 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:genshin_characters/model/received_notification.dart';
 import 'package:genshin_characters/screens/char_screen.dart';
 import 'package:genshin_characters/screens/code_screen.dart';
 import 'package:genshin_characters/screens/code_screen_full.dart';
-import 'package:genshin_characters/utils/image_loader.dart';
 import 'package:genshin_characters/utils/size_config.dart';
 
-class TabbarItem {
-  final IconData lightIcon;
-  final IconData boldIcon;
-  final String label;
-
-  TabbarItem(
-      {required this.lightIcon, required this.boldIcon, required this.label});
-
-  BottomNavigationBarItem item(bool isBold) {
-    return BottomNavigationBarItem(
-        // icon: ImageLoader.imageAsset(isBold ? boldIcon : lightIcon),
-        icon: ImageLoader.imageIcon(isBold ? boldIcon : lightIcon),
-        label: label);
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  // ignore: avoid_print
+  print('notification(${notificationResponse.id}) action tapped: '
+      '${notificationResponse.actionId} with'
+      ' payload: ${notificationResponse.payload}');
+  if (notificationResponse.input?.isNotEmpty ?? false) {
+    // ignore: avoid_print
+    print(
+        'notification action tapped with input: ${notificationResponse.input}');
   }
-
-  BottomNavigationBarItem get light => item(false);
-
-  BottomNavigationBarItem get bold => item(true);
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+
+final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
+    StreamController<ReceivedNotification>.broadcast();
+
+final StreamController<String?> selectNotificationStream =
+    StreamController<String?>.broadcast();
+
+String? selectedNotificationPayload;
+
+/// Defines a iOS/MacOS notification category for plain actions.
+const String darwinNotificationCategoryPlain = 'plainCategory';
+
+/// A notification action which triggers a App navigation event
+const String navigationActionId = 'id_3';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -84,33 +94,78 @@ class _HomeScreenState extends State<HomeScreen> {
     FirebaseMessaging.instance.getInitialMessage().then(
           (value) => setState(
             () {
-              // _resolved = true;
-              initialMessage = value?.data.toString();
-            },
-          ),
-        );
+          // _resolved = true;
+          initialMessage = value?.data.toString();
+        },
+      ),
+    );
 
     FirebaseMessaging.onMessage.listen(showFlutterNotification);
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       debugPrint('A new onMessageOpenedApp event was published!');
       debugPrint('RemoteMessage Data: ${message.data}');
-      _navigateToCodeFullScreen();
+      await _navigateToCodeFullScreen();
     });
 
     if (!kIsWeb) {
       setupFlutterNotifications();
     }
 
+    _configureSelectNotificationSubject();
+    _configureDidReceiveLocalNotificationSubject();
+
     super.initState();
   }
 
-  void _navigateToCodeFullScreen() {
-    Navigator.of(context).pushReplacement(
+  @override
+  void dispose() {
+    didReceiveLocalNotificationStream.close();
+    selectNotificationStream.close();
+    super.dispose();
+  }
+
+  Future<void> _navigateToCodeFullScreen() async {
+    await Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => const CodeScreenFull(),
       ),
     );
+  }
+
+  void _configureSelectNotificationSubject() async {
+    selectNotificationStream.stream.listen((String? payload) async {
+      debugPrint('selectNotificationStream.listen');
+      await _navigateToCodeFullScreen();
+    });
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      debugPrint('didReceiveLocalNotificationStream.listen');
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await _navigateToCodeFullScreen();
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
   }
 
   Future<void> setupFlutterNotifications() async {
@@ -129,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'redeem_code', // id
       'Redeem Code Notifications', // title
       description:
-          'This channel is used for redeem code notifications.', // description
+      'This channel is used for redeem code notifications.', // description
       importance: Importance.high,
     );
 
@@ -139,12 +194,12 @@ class _HomeScreenState extends State<HomeScreen> {
     /// default FCM channel to enable heads up notifications.
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channelGeneral);
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channelRedeemCode);
 
     /// Update the iOS foreground notification presentation options to allow
@@ -162,17 +217,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void showFlutterNotification(RemoteMessage message) async {
     List<ActiveNotification>? activeNotifications =
-        await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.getActiveNotifications();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.getActiveNotifications();
 
     RemoteNotification? notification = message.notification;
     // AndroidNotification? android = message.notification?.android;
 
     if (activeNotifications != null && activeNotifications.isNotEmpty) {
       List<String> lines =
-          activeNotifications.map((e) => e.title.toString()).toList();
+      activeNotifications.map((e) => e.title.toString()).toList();
 
       InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         lines,
@@ -181,17 +236,17 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
       AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-              channelRedeemCode.id, channelRedeemCode.name,
-              channelDescription: channelRedeemCode.description,
-              styleInformation: inboxStyleInformation,
-              icon: 'app_icon',
-              importance: Importance.max,
-              priority: Priority.high,
-              groupKey: groupKey);
+      AndroidNotificationDetails(
+          channelRedeemCode.id, channelRedeemCode.name,
+          channelDescription: channelRedeemCode.description,
+          styleInformation: inboxStyleInformation,
+          icon: 'app_icon',
+          importance: Importance.max,
+          priority: Priority.high,
+          groupKey: groupKey);
 
       NotificationDetails groupNotificationDetailsPlatformSpefics =
-          NotificationDetails(android: androidNotificationDetails);
+      NotificationDetails(android: androidNotificationDetails);
 
       if (notification != null && !kIsWeb) {
         flutterLocalNotificationsPlugin.show(
@@ -203,16 +258,16 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } else {
       AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-              channelRedeemCode.id, channelRedeemCode.name,
-              channelDescription: channelRedeemCode.description,
-              icon: 'app_icon',
-              importance: Importance.max,
-              priority: Priority.high,
-              groupKey: groupKey);
+      AndroidNotificationDetails(
+          channelRedeemCode.id, channelRedeemCode.name,
+          channelDescription: channelRedeemCode.description,
+          icon: 'app_icon',
+          importance: Importance.max,
+          priority: Priority.high,
+          groupKey: groupKey);
 
       NotificationDetails groupNotificationDetailsPlatformSpefics =
-          NotificationDetails(android: androidNotificationDetails);
+      NotificationDetails(android: androidNotificationDetails);
 
       if (notification != null && !kIsWeb) {
         flutterLocalNotificationsPlugin.show(
