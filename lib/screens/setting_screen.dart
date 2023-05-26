@@ -188,12 +188,12 @@ class _SettingScreenState extends State<SettingScreen> {
 
   AlertDialog _confirmLogout() {
     return AlertDialog(
-      title: const Text('Konfirmasi Logout'),
-      content: const Text('Apakah Anda yakin untuk logout?'),
+      title: const Text('Logout Confirmation'),
+      content: const Text('Are you sure to logout?'),
       actions: [
         TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Batal')),
+            child: const Text('Cancel')),
         TextButton(
             onPressed: () async {
               Navigator.of(context).pop(true);
