@@ -31,6 +31,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+keystoreProperties.load(project.rootProject.file('key.properties').newDataInputStream())
+def admobAppId = keystoreProperties.getProperty('admob.appId') // Notice we get the property we the exact same name we wrote in the local.properties file
+
 android {
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
@@ -62,6 +65,8 @@ android {
         versionName flutterVersionName
 
         multiDexEnabled true
+
+        manifestPlaceholders = [admobAppId: admobAppId]
     }
 
     signingConfigs {

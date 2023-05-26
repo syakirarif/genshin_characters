@@ -13,7 +13,7 @@
     </queries>
     <application
         android:label="Genshin Redeemz"
-        android:name="${applicationName}"
+        android:name="android.app.Application"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -43,7 +43,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9167080444329708~3676240728" />
+            android:value="${admobAppId}" />
 
         <!-- A custom Android Notification Channel to deliver FCM notifications on a non-default channel -->
         <meta-data
