@@ -10,6 +10,7 @@ import 'package:genshin_characters/services/authentication.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/utils/functions.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -71,15 +72,19 @@ class _SettingScreenState extends State<SettingScreen> {
 
   late BannerAd bannerAd;
 
-  get datasLoggedIn => <ProfileOption>[
+  get datasLoggedIn =>
+      <ProfileOption>[
         _permissionOption(),
         _redeemNotif(),
+        _shareApp(),
         _buttonLogout(),
       ];
 
-  get datasNotLoggedIn => <ProfileOption>[
+  get datasNotLoggedIn =>
+      <ProfileOption>[
         _permissionOption(),
         _redeemNotif(),
+        _shareApp(),
       ];
 
   _redeemNotif() => ProfileOption(
@@ -161,6 +166,15 @@ class _SettingScreenState extends State<SettingScreen> {
       onClick: () async {
         // _notificationsGranted ? null : await _requestPermissions();
         await requestPermission();
+      });
+
+  _shareApp() => ProfileOption.arrow(
+      title: 'Share This App',
+      icon: _profileIcon('user@2x.png'),
+      onClick: () {
+        const String sentence2 =
+            'Hey Travelers, never miss out to claim redemption codes anymore. Install Genshin Redeemz app now!\n\nCheckout on Google Play Store: https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters';
+        Share.share(sentence2, subject: 'I like Genshin Redeemz app!');
       });
 
   _buttonLogout() => ProfileOption.arrow(
