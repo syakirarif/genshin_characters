@@ -313,11 +313,7 @@ class _CodeScreenFullState extends State<CodeScreenFull>
     return Row(
       children: [
         Expanded(
-          child: FilledButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll<Color>(Colors.green.shade700),
-              ),
+          child: TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
@@ -363,14 +359,11 @@ class _CodeScreenFullState extends State<CodeScreenFull>
       children: [
         (isNotClaimed)
             ? Expanded(
-                child: FilledButton(
-                    style: const ButtonStyle(
-                      backgroundColor:
-                          MaterialStatePropertyAll<Color>(Colors.black45),
-                    ),
+          child: OutlinedButton(
                     onPressed: () async {
-                      await DataCodeService().markCodeAsClaimed(
-                          codeId: data.codeId!, uid: user!.uid);
+                      await showDialog(
+                          context: context,
+                          builder: (builder) => _confirmClaim(data));
                       if (context.mounted) Navigator.of(context).pop();
                     },
                     child: const Text('Mark as Claimed')),
@@ -403,6 +396,25 @@ class _CodeScreenFullState extends State<CodeScreenFull>
               },
               child: const Text('REDEEM NOW')),
         )
+      ],
+    );
+  }
+
+  AlertDialog _confirmClaim(CodeModel data) {
+    return AlertDialog(
+      title: const Text('Warning'),
+      content: const Text('Mark as claimed? This is cannot be undone.'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Maybe later')),
+        TextButton(
+            onPressed: () async {
+              await DataCodeService()
+                  .markCodeAsClaimed(codeId: data.codeId!, uid: user!.uid);
+              if (context.mounted) Navigator.of(context).pop();
+            },
+            child: const Text('Yes, I claimed it')),
       ],
     );
   }
