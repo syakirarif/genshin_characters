@@ -21,6 +21,15 @@ class _ItemCodeState extends State<ItemCode> {
   Widget build(BuildContext context) {
     bool isNotClaimed = widget.isNotClaimed;
 
+    String? expDate = widget.dataModel.expirationDate;
+
+    if (expDate != null) {
+      if (expDate != 'TBD' && expDate != 'Unknown' && expDate != 'Permanent') {
+        DateTime temp = DateTime.parse(expDate);
+        expDate = formatDateTime(temp.toLocal());
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 15),
@@ -110,7 +119,7 @@ class _ItemCodeState extends State<ItemCode> {
                   ],
                 ),
                 Text(
-                  formatDateTime(widget.dataModel.expirationDate?.toLocal()),
+                  '$expDate',
                   style: TextStyle(color: Colors.grey.shade800, fontSize: 12),
                 )
               ],

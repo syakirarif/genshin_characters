@@ -38,7 +38,7 @@ class DataCodeService {
       return CodeModel(
           code: data['code'],
           codeId: data['code_id'],
-          expirationDate: DateTime.parse(data['expiration_date']),
+          expirationDate: data['expiration_date'] ?? 'TBD',
           gameId: data['game_id'],
           gameName: data['game_name'],
           codeDetail: data['code_detail'],

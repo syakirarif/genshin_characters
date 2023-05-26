@@ -1,7 +1,7 @@
 class CodeModel {
   final String? code;
   final String? codeId;
-  final DateTime? expirationDate;
+  final String? expirationDate;
   final DateTime? createdAt;
   final String? gameId;
   final String? gameName;
