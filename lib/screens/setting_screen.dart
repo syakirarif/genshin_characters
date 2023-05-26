@@ -66,8 +66,6 @@ class _SettingScreenState extends State<SettingScreen> {
 
   bool isSubscribedToRedeemGenshin = false;
 
-  String subsRedeemGenshin = 'subscribe-redeem-genshin';
-
   bool isAdBannerLoaded = false;
 
   late BannerAd bannerAd;
@@ -110,7 +108,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 if (!isSubscribedToRedeemGenshin) {
                   await FirebaseMessaging.instance
                       .subscribeToTopic('redeem-genshin');
-                  prefs.setBool(subsRedeemGenshin, true);
+                  prefs.setBool(constants_key.subsRedeemGenshin, true);
                   if (context.mounted) {
                     showSnackBar(
                         context, 'You will receive redeem codes notification.');
@@ -118,7 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 } else {
                   await FirebaseMessaging.instance
                       .unsubscribeFromTopic('redeem-genshin');
-                  prefs.setBool(subsRedeemGenshin, false);
+                  prefs.setBool(constants_key.subsRedeemGenshin, false);
                   if (context.mounted) {
                     showSnackBar(context,
                         'You will not receive redeem codes notification anymore.');
@@ -222,7 +220,8 @@ class _SettingScreenState extends State<SettingScreen> {
   Future<void> _checkSubscription() async {
     final SharedPreferences prefs = await _prefs;
     setState(() {
-      isSubscribedToRedeemGenshin = (prefs.getBool(subsRedeemGenshin) ?? false);
+      isSubscribedToRedeemGenshin =
+          (prefs.getBool(constants_key.subsRedeemGenshin) ?? false);
     });
   }
 
