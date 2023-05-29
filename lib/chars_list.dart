@@ -66,7 +66,7 @@ class _CharsList extends State<CharsList> {
   @override
   Widget build(BuildContext context) {
     final BannerAd myBanner = BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCharsBanner,
+      adUnitId: constants_key.adUnitIdBannerChars,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

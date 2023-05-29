@@ -95,7 +95,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCharsBanner,
+      adUnitId: constants_key.adUnitIdBannerChars,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

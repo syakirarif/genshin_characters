@@ -9,6 +9,7 @@ import 'package:genshin_characters/model/received_notification.dart';
 import 'package:genshin_characters/screens/char_screen.dart';
 import 'package:genshin_characters/screens/code_screen.dart';
 import 'package:genshin_characters/screens/code_screen_full.dart';
+import 'package:genshin_characters/screens/daily_checkin_screen.dart';
 import 'package:genshin_characters/utils/size_config.dart';
 
 @pragma('vm:entry-point')
@@ -56,7 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String? initialMessage;
   bool _resolved = false;
 
-  final screens = [const CharScreen(), const CodeScreen()];
+  final screens = [
+    const CharScreen(),
+    const CodeScreen(),
+    const DailyCheckinScreen()
+  ];
 
   // late AndroidNotificationChannel channel;
 
@@ -69,6 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icon(Icons.redeem_outlined),
         activeIcon: Icon(Icons.redeem),
         label: 'Redeem Codes'),
+    const BottomNavigationBarItem(
+        icon: Icon(Icons.check_circle_outline_rounded),
+        activeIcon: Icon(Icons.check_circle),
+        label: 'Daily Check-in'),
   ];
 
   @override
