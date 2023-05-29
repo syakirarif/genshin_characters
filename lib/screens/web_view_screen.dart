@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/utils/navigation_controls.dart';
 import 'package:genshin_characters/utils/navigation_menu.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WebViewScreen extends StatefulWidget {
@@ -15,7 +17,8 @@ class WebViewScreen extends StatefulWidget {
   State<WebViewScreen> createState() => _WebViewScreenState();
 }
 
-class _WebViewScreenState extends State<WebViewScreen> {
+class _WebViewScreenState extends State<WebViewScreen>
+    with WidgetsBindingObserver {
   final GlobalKey webViewKey = GlobalKey();
 
   String url = '';
@@ -40,9 +43,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   late PullToRefreshController pullToRefreshController;
 
+  bool isAdBannerLoaded = false;
+  late BannerAd bannerAd;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    bannerAd = _initBannerAd();
+    bannerAd.load();
 
     url = 'https://genshin.hoyoverse.com/en/gift?code=${widget.redeemCode}';
 
@@ -63,7 +72,59 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  BannerAd _initBannerAd() {
+    return BannerAd(
+      adUnitId: constants_key.adUnitIdBannerWebView,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) {
+          setState(() {
+            isAdBannerLoaded = true;
+          });
+          // print('Ad loaded.')
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          // setState(() {
+          //   isAdBannerLoaded = false;
+          // });
+          ad.dispose();
+          //print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => {
+          //print('Ad opened.')
+        },
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => {
+          //print('Ad closed.')
+        },
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => {
+          // print('Ad impression.')
+        },
+      ),
+    );
+  }
+
+  Widget _createBannerAd(BannerAd myBanner) {
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
+
+    return adContainer;
   }
 
   @override
@@ -169,6 +230,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
     );
   }
 }
