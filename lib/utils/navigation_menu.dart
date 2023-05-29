@@ -4,7 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 enum _MenuOptions {
   navigationDelegate,
-}
+  userAgent }
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu(
@@ -27,12 +27,26 @@ class _NavigationMenuState extends State<NavigationMenu> {
           case _MenuOptions.navigationDelegate:
             _launchURL();
             break;
+          case _MenuOptions.userAgent:
+            final userAgent = await widget.controller
+                .runJavaScriptReturningResult('navigator.userAgent');
+            if (!mounted) return;
+            debugPrint('userAgent : $userAgent');
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('$userAgent'),
+            ));
+            break;
         }
       },
-      itemBuilder: (context) => [
+      itemBuilder: (context) =>
+      [
         const PopupMenuItem<_MenuOptions>(
           value: _MenuOptions.navigationDelegate,
           child: Text('Open in Browser'),
+        ),
+        const PopupMenuItem<_MenuOptions>(
+          value: _MenuOptions.userAgent,
+          child: Text('Show user-agent'),
         ),
       ],
     );
