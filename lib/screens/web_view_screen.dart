@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:genshin_characters/utils/navigation_controls.dart';
 import 'package:genshin_characters/utils/navigation_menu.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WebViewScreen extends StatefulWidget {
   const WebViewScreen({required this.redeemCode, Key? key}) : super(key: key);
@@ -13,47 +16,54 @@ class WebViewScreen extends StatefulWidget {
 }
 
 class _WebViewScreenState extends State<WebViewScreen> {
-  late final WebViewController _controller;
-  late final PlatformWebViewControllerCreationParams params;
+  final GlobalKey webViewKey = GlobalKey();
 
-  String webUrl = '';
+  String url = '';
   String webUrlSecurityDone =
       'https://account.hoyoverse.com/security.html?complete=1';
 
-  var loadingPercentage = 0;
+  double progress = 0.0;
+
+  InAppWebViewController? webViewController;
+
+  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+      crossPlatform: InAppWebViewOptions(
+        useShouldOverrideUrlLoading: true,
+        mediaPlaybackRequiresUserGesture: false,
+      ),
+      android: AndroidInAppWebViewOptions(
+        useHybridComposition: true,
+      ),
+      ios: IOSInAppWebViewOptions(
+        allowsInlineMediaPlayback: true,
+      ));
+
+  late PullToRefreshController pullToRefreshController;
 
   @override
   void initState() {
-    webUrl = 'https://genshin.hoyoverse.com/en/gift?code=${widget.redeemCode}';
-
-    _controller = WebViewController()
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (url) {
-          setState(() {
-            loadingPercentage = 0;
-          });
-        },
-        onProgress: (progress) {
-          setState(() {
-            loadingPercentage = progress;
-          });
-        },
-        onPageFinished: (url) {
-          if (url == webUrlSecurityDone) {
-            _controller.goBack();
-          }
-          setState(() {
-            loadingPercentage = 100;
-          });
-        },
-      ))
-      // ..setUserAgent('Version/4.0')
-      ..enableZoom(true)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(
-        Uri.parse(webUrl),
-      );
     super.initState();
+
+    url = 'https://genshin.hoyoverse.com/en/gift?code=${widget.redeemCode}';
+
+    pullToRefreshController = PullToRefreshController(
+      options: PullToRefreshOptions(
+        color: Colors.blue,
+      ),
+      onRefresh: () async {
+        if (Platform.isAndroid) {
+          webViewController?.reload();
+        } else if (Platform.isIOS) {
+          webViewController?.loadUrl(
+              urlRequest: URLRequest(url: await webViewController?.getUrl()));
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -61,26 +71,103 @@ class _WebViewScreenState extends State<WebViewScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          NavigationControls(controller: _controller),
+          NavigationControls(controller: webViewController),
           NavigationMenu(
-            controller: _controller,
-            url: webUrl,
+            controller: webViewController,
+            url: url,
           )
         ],
       ),
-      // body: WebViewStack(
-      //   controller: _controller,
-      // ),
-      body: Stack(
-        children: [
-          WebViewWidget(
-            controller: _controller,
-          ),
-          if (loadingPercentage < 100)
-            LinearProgressIndicator(
-              value: loadingPercentage / 100.0,
-            ),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  InAppWebView(
+                    key: webViewKey,
+                    initialUrlRequest: URLRequest(url: Uri.parse(url)),
+                    initialOptions: options,
+                    pullToRefreshController: pullToRefreshController,
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {},
+                    androidOnPermissionRequest:
+                        (controller, origin, resources) async {
+                      return PermissionRequestResponse(
+                          resources: resources,
+                          action: PermissionRequestResponseAction.GRANT);
+                    },
+                    shouldOverrideUrlLoading:
+                        (controller, navigationAction) async {
+                      var uri = navigationAction.request.url!;
+
+                      if (![
+                        "http",
+                        "https",
+                        "file",
+                        "chrome",
+                        "data",
+                        "javascript",
+                        "about"
+                      ].contains(uri.scheme)) {
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          // Launch the App
+                          await launchUrl(
+                            Uri.parse(url),
+                          );
+                          // and cancel the request
+                          return NavigationActionPolicy.CANCEL;
+                        }
+                      }
+
+                      return NavigationActionPolicy.ALLOW;
+                    },
+                    onLoadStop: (controller, url) async {
+                      debugPrint('onLoadStop: $url');
+                      pullToRefreshController.endRefreshing();
+
+                      if (url.toString() == webUrlSecurityDone) {
+                        webViewController?.goBack();
+                      }
+                      // setState(() {
+                      //   this.url = url.toString();
+                      //   urlController.text = this.url;
+                      // });
+                    },
+                    onLoadError: (controller, url, code, message) {
+                      debugPrint('onLoadError: $url');
+                      pullToRefreshController.endRefreshing();
+                    },
+                    onProgressChanged: (controller, progress) {
+                      if (progress == 100) {
+                        pullToRefreshController.endRefreshing();
+                      }
+                      setState(() {
+                        this.progress = progress / 100;
+                        // urlController.text = this.url;
+                      });
+                    },
+                    onUpdateVisitedHistory: (controller, url, androidIsReload) {
+                      debugPrint('onUpdateVisitedHistory: $url');
+                      // setState(() {
+                      //   this.url = url.toString();
+                      //   urlController.text = this.url;
+                      // });
+                    },
+                    onConsoleMessage: (controller, consoleMessage) {
+                      debugPrint('$consoleMessage');
+                    },
+                  ),
+                  progress < 1.0
+                      ? LinearProgressIndicator(value: progress)
+                      : Container(),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

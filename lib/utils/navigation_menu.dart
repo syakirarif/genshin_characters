@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
-enum _MenuOptions {
-  navigationDelegate,
-  userAgent }
+enum _MenuOptions { navigationDelegate }
 
 class NavigationMenu extends StatefulWidget {
-  const NavigationMenu(
-      {required this.controller, required this.url, super.key});
+  const NavigationMenu({this.controller, required this.url, super.key});
 
-  final WebViewController controller;
+  final InAppWebViewController? controller;
 
   final String url;
 
@@ -27,15 +24,15 @@ class _NavigationMenuState extends State<NavigationMenu> {
           case _MenuOptions.navigationDelegate:
             _launchURL();
             break;
-          case _MenuOptions.userAgent:
-            final userAgent = await widget.controller
-                .runJavaScriptReturningResult('navigator.userAgent');
-            if (!mounted) return;
-            debugPrint('userAgent : $userAgent');
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('$userAgent'),
-            ));
-            break;
+          // case _MenuOptions.userAgent:
+          //   final userAgent = await widget.controller
+          //       .runJavaScriptReturningResult('navigator.userAgent');
+          //   if (!mounted) return;
+          //   debugPrint('userAgent : $userAgent');
+          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text('$userAgent'),
+          //   ));
+          //   break;
         }
       },
       itemBuilder: (context) =>
@@ -44,10 +41,10 @@ class _NavigationMenuState extends State<NavigationMenu> {
           value: _MenuOptions.navigationDelegate,
           child: Text('Open in Browser'),
         ),
-        const PopupMenuItem<_MenuOptions>(
-          value: _MenuOptions.userAgent,
-          child: Text('Show user-agent'),
-        ),
+        // const PopupMenuItem<_MenuOptions>(
+        //   value: _MenuOptions.userAgent,
+        //   child: Text('Show user-agent'),
+        // ),
       ],
     );
   }

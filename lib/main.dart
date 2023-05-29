@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:genshin_characters/model/received_notification.dart';
 import 'package:genshin_characters/screens/home_screen.dart';
@@ -25,6 +26,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kDebugMode) {
+    if (Platform.isAndroid) {
+      await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+    }
+
     // For AdMobs test purpose
     MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
         testDeviceIds: ['6B48649ED223FA9B879ED48941A6D133']));

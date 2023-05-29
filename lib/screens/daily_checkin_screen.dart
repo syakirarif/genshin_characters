@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DailyCheckinScreen extends StatefulWidget {
   const DailyCheckinScreen({Key? key}) : super(key: key);
@@ -13,54 +16,56 @@ class DailyCheckinScreen extends StatefulWidget {
 
 class _DailyCheckinScreenState extends State<DailyCheckinScreen>
     with WidgetsBindingObserver {
-  late final WebViewController _controller;
+  final GlobalKey webViewKey = GlobalKey();
+
+  double progress = 0.0;
+
+  InAppWebViewController? webViewController;
+
+  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+      crossPlatform: InAppWebViewOptions(
+        useShouldOverrideUrlLoading: true,
+        mediaPlaybackRequiresUserGesture: false,
+      ),
+      android: AndroidInAppWebViewOptions(
+        useHybridComposition: true,
+      ),
+      ios: IOSInAppWebViewOptions(
+        allowsInlineMediaPlayback: true,
+      ));
+
+  late PullToRefreshController pullToRefreshController;
 
   bool isAdBannerLoaded = false;
   late BannerAd bannerAd;
 
-  String webUrl =
+  String url =
       'https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481';
 
   // String webUrl = 'https://genshin.hoyoverse.com/en/gift';
   String webUrlHoyolabSecurityDone =
       'https://account.hoyolab.com/security.html?complete=1';
 
-  var loadingPercentage = 0;
-
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
     bannerAd = _initBannerAd();
     bannerAd.load();
-    _controller = WebViewController()
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (url) {
-          setState(() {
-            loadingPercentage = 0;
-          });
-        },
-        onProgress: (progress) {
-          setState(() {
-            loadingPercentage = progress;
-          });
-        },
-        onPageFinished: (url) {
-          debugPrint('onPageFinished: $url');
-          if (url == webUrlHoyolabSecurityDone) {
-            _controller.goBack();
-          }
-          setState(() {
-            loadingPercentage = 100;
-          });
-        },
-      ))
-      // ..setUserAgent('Version/4.0')
-      ..enableZoom(true)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(
-        Uri.parse(webUrl),
-      );
-    super.initState();
+
+    pullToRefreshController = PullToRefreshController(
+      options: PullToRefreshOptions(
+        color: Colors.blue,
+      ),
+      onRefresh: () async {
+        if (Platform.isAndroid) {
+          webViewController?.reload();
+        } else if (Platform.isIOS) {
+          webViewController?.loadUrl(
+              urlRequest: URLRequest(url: await webViewController?.getUrl()));
+        }
+      },
+    );
   }
 
   @override
@@ -124,19 +129,96 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FRAppBar.defaultAppBar(context, title: 'Daily Check-in'),
-      // body: WebViewStack(
-      //   controller: _controller,
-      // ),
-      body: Stack(
-        children: [
-          WebViewWidget(
-            controller: _controller,
-          ),
-          if (loadingPercentage < 100)
-            LinearProgressIndicator(
-              value: loadingPercentage / 100.0,
-            ),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  InAppWebView(
+                    key: webViewKey,
+                    initialUrlRequest: URLRequest(url: Uri.parse(url)),
+                    initialOptions: options,
+                    pullToRefreshController: pullToRefreshController,
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {},
+                    androidOnPermissionRequest:
+                        (controller, origin, resources) async {
+                      return PermissionRequestResponse(
+                          resources: resources,
+                          action: PermissionRequestResponseAction.GRANT);
+                    },
+                    shouldOverrideUrlLoading:
+                        (controller, navigationAction) async {
+                      var uri = navigationAction.request.url!;
+
+                      if (![
+                        "http",
+                        "https",
+                        "file",
+                        "chrome",
+                        "data",
+                        "javascript",
+                        "about"
+                      ].contains(uri.scheme)) {
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          // Launch the App
+                          await launchUrl(
+                            Uri.parse(url),
+                          );
+                          // and cancel the request
+                          return NavigationActionPolicy.CANCEL;
+                        }
+                      }
+
+                      return NavigationActionPolicy.ALLOW;
+                    },
+                    onLoadStop: (controller, url) async {
+                      debugPrint('onLoadStop: $url');
+                      pullToRefreshController.endRefreshing();
+
+                      if (url.toString() == webUrlHoyolabSecurityDone) {
+                        webViewController?.goBack();
+                      }
+                      // setState(() {
+                      //   this.url = url.toString();
+                      //   urlController.text = this.url;
+                      // });
+                    },
+                    onLoadError: (controller, url, code, message) {
+                      debugPrint('onLoadError: $url');
+                      pullToRefreshController.endRefreshing();
+                    },
+                    onProgressChanged: (controller, progress) {
+                      if (progress == 100) {
+                        pullToRefreshController.endRefreshing();
+                      }
+                      setState(() {
+                        this.progress = progress / 100;
+                        // urlController.text = this.url;
+                      });
+                    },
+                    onUpdateVisitedHistory: (controller, url, androidIsReload) {
+                      debugPrint('onUpdateVisitedHistory: $url');
+                      // setState(() {
+                      //   this.url = url.toString();
+                      //   urlController.text = this.url;
+                      // });
+                    },
+                    onConsoleMessage: (controller, consoleMessage) {
+                      debugPrint('$consoleMessage');
+                    },
+                  ),
+                  progress < 1.0
+                      ? LinearProgressIndicator(value: progress)
+                      : Container(),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
     );
