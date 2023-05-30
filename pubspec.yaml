@@ -87,6 +87,7 @@ flutter:
     - assets/icons/
     - assets/icons/products/
     - assets/icons/profile/
+    - assets/icons/elements/
 
   fonts:
     - family: Urbanist

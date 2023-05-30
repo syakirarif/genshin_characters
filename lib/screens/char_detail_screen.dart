@@ -35,6 +35,23 @@ class _CharsDetail extends State<CharDetailScreen> {
     super.dispose();
   }
 
+  TextStyle _textStyle() {
+    return TextStyle(
+      fontFamily: 'Urbanist',
+      fontSize: 16.0,
+      color: AppColor.mainTextColor,
+    );
+  }
+
+  TextStyle _textStyleTitle() {
+    return TextStyle(
+      fontFamily: 'Urbanist',
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: AppColor.mainTextColor,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final BannerAd myBanner = BannerAd(
@@ -192,6 +209,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                       ),
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -205,128 +223,132 @@ class _CharsDetail extends State<CharDetailScreen> {
                                 color: AppColor.mainTextColor,
                               ),
                             ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.006,
-                            ),
-                            CachedNetworkImage(
-                              width: 90.0,
-                              height: 30.0,
-                              imageUrl: imgRarity,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
+                            Row(
+                              children: [
+                                CachedNetworkImage(
+                                  width: 90.0,
+                                  height: 30.0,
+                                  imageUrl: imgRarity,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white)),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Image(
+                                    image: AssetImage(
+                                        'assets/img_placeholder.png'),
                                     fit: BoxFit.scaleDown,
                                   ),
                                 ),
-                              ),
-                              placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white)),
-                              ),
-                              errorWidget: (context, url, error) => const Image(
-                                image: AssetImage('assets/img_placeholder.png'),
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.006,
-                            ),
-                            Text(
-                              widget.charModel.gender ?? '',
-                              style: TextStyle(
-                                fontFamily: 'Urbanist',
-                                fontSize: 16.0,
-                                color: AppColor.secondTextColor,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.006,
-                            ),
-                            Text(
-                              "Birthday: ${widget.charModel.birthday}",
-                              style: TextStyle(
-                                fontFamily: 'Urbanist',
-                                fontSize: 16.0,
-                                color: AppColor.mainTextColor,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.006,
-                            ),
-                            Text(
-                              "Constellation: ${widget.charModel.constellation}",
-                              style: TextStyle(
-                                fontFamily: 'Urbanist',
-                                fontSize: 16.0,
-                                color: AppColor.mainTextColor,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.006,
-                            ),
-                            Text(
-                              "Title: ${widget.charModel.title}",
-                              style: TextStyle(
-                                fontFamily: 'Urbanist',
-                                fontSize: 16.0,
-                                color: AppColor.mainTextColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 25.0,
-                            ),
-                            Row(
-                              children: [
+                                Expanded(child: Container()),
                                 Container(
                                   alignment: AlignmentDirectional.center,
                                   width: 100.0,
                                   height: 50.0,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          _elementColor(widget.charModel.vision)
-                                              .withOpacity(0.5),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    widget.charModel.vision ?? '',
-                                    style: const TextStyle(
-                                      fontFamily: 'Urbanist',
-                                      fontSize: 18.0,
+                                  child: Row(children: [
+                                    Image(
+                                      image: AssetImage(
+                                          'assets/icons/elements/${widget.charModel.vision?.toLowerCase()}.webp'),
+                                      height: 20.0,
                                     ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      widget.charModel.vision ?? '',
+                                      style: _textStyle(),
+                                    ),
+                                  ]),
+                                )
+                              ],
+                            ),
+                            Text(
+                              widget.charModel.gender ?? '',
+                              style: const TextStyle(
+                                fontFamily: 'Urbanist',
+                                fontSize: 20.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12.0,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Birthday',
+                                          style: _textStyleTitle()),
+                                      const SizedBox(
+                                        height: 4.0,
+                                      ),
+                                      Text('${widget.charModel.birthday}',
+                                          style: _textStyle()),
+                                    ],
                                   ),
                                 ),
                                 Expanded(
-                                  child: Container(),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nation:",
-                                      style: TextStyle(
-                                        fontFamily: 'Urbanist',
-                                        fontSize: 16.0,
-                                        color: AppColor.mainTextColor,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Nation', style: _textStyleTitle()),
+                                      const SizedBox(
+                                        height: 4.0,
                                       ),
-                                    ),
-                                    Text(
-                                      widget.charModel.nation ?? '',
-                                      style: const TextStyle(
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 28.0,
+                                      Text('${widget.charModel.nation}',
+                                          style: _textStyle()),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 12.0,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Title', style: _textStyleTitle()),
+                                      const SizedBox(
+                                        height: 4.0,
                                       ),
-                                    )
-                                  ],
+                                      Text('${widget.charModel.title}',
+                                          style: _textStyle()),
+                                    ],
+                                  ),
                                 ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Constellation',
+                                          style: _textStyleTitle()),
+                                      const SizedBox(
+                                        height: 4.0,
+                                      ),
+                                      Text('${widget.charModel.constellation}',
+                                          style: _textStyle()),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -343,7 +365,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.charModel.description ?? '',
@@ -368,7 +390,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                             ),
                             SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.006,
+                              MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.charModel.obtain ?? '',
@@ -393,23 +415,5 @@ class _CharsDetail extends State<CharDetailScreen> {
         bottomNavigationBar: isAdBannerSuccess ? adContainer : null,
       ),
     );
-  }
-
-  Color _elementColor(String? vision) {
-    return vision == "Anemo"
-        ? Colors.greenAccent
-        : vision == "Dendro"
-            ? Colors.green
-            : vision == "Hydro"
-                ? Colors.lightBlueAccent
-                : vision == "Geo"
-                    ? Colors.amberAccent
-                    : vision == "Electro"
-                        ? Colors.purpleAccent
-                        : vision == "Pyro"
-                            ? Colors.redAccent
-                            : vision == "Cryo"
-                                ? Colors.cyanAccent
-                                : AppColor.secondTextColor;
   }
 }

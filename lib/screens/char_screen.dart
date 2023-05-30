@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
 import 'package:genshin_characters/model/char_model.dart';
-import 'package:genshin_characters/model/item_filter_model.dart';
 import 'package:genshin_characters/screens/char_detail_screen.dart';
 import 'package:genshin_characters/utils/colors.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
-import 'package:genshin_characters/widgets/chars_card_2.dart';
+import 'package:genshin_characters/widgets/char_card.dart';
+import 'package:genshin_characters/widgets/filter_category.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class CharScreen extends StatefulWidget {
@@ -36,11 +36,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
   List<CharModel> _filteredList = [];
   List<CharModel> filteredCharList = [];
 
-  final List<String> _filterVision = [];
-  final List<String> _filterRarity = [];
-  final List<String> _filterNation = [];
-  final List<String> _filterWeapon = [];
-
   String filter = "";
   bool isFilterCategory = false;
 
@@ -52,10 +47,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
   bool isAdInterstitialSuccess = false;
 
   late BannerAd bannerAd;
-
-  List<ItemFilter> _visionList = ItemFilter.initVisionList();
-
-  List<ItemFilter> _rarityList = ItemFilter.initRarityList();
 
   @override
   void dispose() {
@@ -247,25 +238,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     return outputList;
   }
 
-  Widget _myFab() {
-    return FloatingActionButton.extended(
-        backgroundColor: Colors.blue,
-        label: const Text(
-          'Filter',
-          style: TextStyle(color: Colors.white),
-        ),
-        icon: const Icon(
-          Icons.filter_alt_outlined,
-          color: Colors.white,
-        ),
-        onPressed: () {
-          setState(() {
-            resetFilter();
-          });
-          _showBottomSheet();
-        });
-  }
-
   Widget _createBannerAd(BannerAd myBanner) {
     final AdWidget adWidget = AdWidget(ad: myBanner);
 
@@ -277,6 +249,22 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
     );
 
     return adContainer;
+  }
+
+  void _onTapFilterCategory(String idCategory) {
+    if (idCategory != 'all') {
+      if (idCategory == '4' || idCategory == '5') {
+        filteredCharList = getBasedOnRarity(charsData, idCategory);
+      } else {
+        filteredCharList = getBasedOnVision(charsData, idCategory);
+      }
+    } else {
+      filteredCharList.clear();
+    }
+
+    setState(() {
+      isFilterCategory = true;
+    });
   }
 
   Widget _generateContainer(int value) {
@@ -313,6 +301,17 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
           return CustomScrollView(
             slivers: [
               SliverPadding(
+                padding: const EdgeInsets.only(top: 24, left: 12, right: 12),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    ((context, index) => CharFilterCategory(
+                          onTapFunction: _onTapFilterCategory,
+                        )),
+                    childCount: 1,
+                  ),
+                ),
+              ),
+              SliverPadding(
                 padding: padding,
                 sliver: _buildChars(_filteredList.length),
               ),
@@ -322,174 +321,6 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
         },
       ),
     );
-  }
-
-  List<Widget> filterRarityList(Function newSetState) {
-    List<Widget> chips = [];
-    for (int i = 0; i < _rarityList.length; i++) {
-      Widget item = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 5),
-        child: FilterChip(
-          label: Text(_rarityList[i].label),
-          labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
-          backgroundColor: _rarityList[i].color,
-          selected: _rarityList[i].isSelected,
-          onSelected: (bool value) {
-            newSetState(() {
-              _rarityList[i].isSelected = value;
-            });
-
-            if (_rarityList[i].isSelected == true) {
-              if (filteredCharList.isNotEmpty) {
-                filteredCharList ==
-                    getBasedOnRarity(filteredCharList, _rarityList[i].value);
-                filteredCharList.removeWhere((element) =>
-                    element.rarity.toString().toLowerCase() !=
-                    _rarityList[i].value);
-              } else {
-                filteredCharList +=
-                    getBasedOnRarity(charsData, _rarityList[i].value);
-              }
-            } else {
-              filteredCharList.removeWhere((element) =>
-                  element.rarity.toString().toLowerCase() ==
-                  _rarityList[i].value);
-            }
-
-            setState(() {
-              isFilterCategory = true;
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
-  }
-
-  List<Widget> filterVisionList(Function newSetState) {
-    List<Widget> chips = [];
-    for (int i = 0; i < _visionList.length; i++) {
-      Widget item = Padding(
-        padding: const EdgeInsets.only(left: 10, right: 5),
-        child: FilterChip(
-          label: Text(_visionList[i].label),
-          labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
-          backgroundColor: _visionList[i].color,
-          selected: _visionList[i].isSelected,
-          onSelected: (bool value) {
-            newSetState(() {
-              _visionList[i].isSelected = value;
-            });
-
-            if (_visionList[i].isSelected == true) {
-              if (filteredCharList.isNotEmpty) {
-                filteredCharList ==
-                    getBasedOnVision(filteredCharList, _visionList[i].value);
-                filteredCharList.removeWhere((element) =>
-                    element.vision.toString().toLowerCase() !=
-                    _visionList[i].value);
-              } else {
-                filteredCharList +=
-                    getBasedOnVision(charsData, _visionList[i].value);
-              }
-            } else {
-              filteredCharList.removeWhere((element) =>
-                  element.vision.toString().toLowerCase() ==
-                  _visionList[i].value);
-            }
-
-            setState(() {
-              isFilterCategory = true;
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
-  }
-
-  void resetFilter() {
-    isFilterCategory = false;
-    _filterRarity.clear();
-    _filterVision.clear();
-    filteredCharList.clear();
-    _rarityList = ItemFilter.initRarityList();
-    _visionList = ItemFilter.initVisionList();
-  }
-
-  void _showBottomSheet() {
-    showModalBottomSheet(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-        context: context,
-        isScrollControlled: true,
-        builder: (context) => Container(
-              padding: const EdgeInsets.all(22),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: StatefulBuilder(
-                  builder: (BuildContext context, StateSetter stateSetter) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const Text(
-                          'Filter',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Wrap(
-                          spacing: 0,
-                          direction: Axis.horizontal,
-                          children: filterRarityList(stateSetter),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Wrap(
-                          spacing: 0,
-                          direction: Axis.horizontal,
-                          children: filterVisionList(stateSetter),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                              style: const ButtonStyle(
-                                backgroundColor:
-                                    MaterialStatePropertyAll<Color>(
-                                        Colors.blue),
-                              ),
-                              onPressed: () {
-                                // debugPrint('_filterRarity: $_filterRarity');
-                                // debugPrint('_filterVision: $_filterVision');
-                                // if (_filterVision.isNotEmpty ||
-                                //     _filterRarity.isNotEmpty) {
-                                //   setState(() {
-                                //     isFilterCategory = true;
-                                //   });
-                                // } else {
-                                //   setState(() {
-                                //     isFilterCategory = false;
-                                //   });
-                                // }
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Close')),
-                        )
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ));
   }
 
   Widget _buildChars(int count) {
@@ -523,7 +354,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
             }
           }
         },
-        child: CharsCard2(data: _filteredList[index]));
+        child: CharCard(data: _filteredList[index]));
   }
 
   void moveToCharsDetailPage(int index) {
@@ -586,42 +417,8 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
           setState(() {
             isAdInterstitialSuccess = false;
           });
-
-          // if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
-          //   _createInterstitialAd();
-          // } else {
-          //   setState(() {
-          //     isAdInterstitialSuccess = false;
-          //   });
-          //   // moveToCharsDetailPage(index);
-          //   // Navigator.pushAndRemoveUntil(
-          //   //   context,
-          //   //   MaterialPageRoute(builder: (context) => HomeScreen()),
-          //   //       (route) => false,
-          //   // );
-          // }
         },
       ),
     );
   }
-
-// showLoaderDialog(BuildContext context) {
-//   AlertDialog alert = AlertDialog(
-//     content: Row(
-//       children: [
-//         const CircularProgressIndicator(),
-//         Container(
-//             margin: const EdgeInsets.only(left: 7),
-//             child: const Text("Loading...")),
-//       ],
-//     ),
-//   );
-//   showDialog(
-//     barrierDismissible: false,
-//     context: context,
-//     builder: (BuildContext context) {
-//       return alert;
-//     },
-//   );
-// }
 }

@@ -5,8 +5,8 @@ import 'package:genshin_characters/utils/colors.dart';
 
 typedef CharOnTaped = void Function(CharModel data);
 
-class CharsCard2 extends StatelessWidget {
-  const CharsCard2({
+class CharCard extends StatelessWidget {
+  const CharCard({
     required this.data,
     this.onTap,
     Key? key,
@@ -57,12 +57,6 @@ class CharsCard2 extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                   ),
                 ),
-                // Image.asset(data.icon, width: 182, height: 182),
-                // Positioned(
-                //   top: 16,
-                //   right: 16,
-                //   child: Image.asset('assets/icons/not_collected@2x.png', width: 28, height: 28),
-                // )
               ],
             ),
           ),
@@ -79,14 +73,6 @@ class CharsCard2 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _underTheName(),
-          // const SizedBox(height: 10),
-          // Text(
-          //   '\$${data.price.toStringAsFixed(2)}',
-          //   style: const TextStyle(
-          //       fontSize: 18,
-          //       fontWeight: FontWeight.bold,
-          //       color: Color(0xFF212121)),
-          // )
         ],
       ),
     );
@@ -96,16 +82,15 @@ class CharsCard2 extends StatelessWidget {
     return Row(
       children: [
         // Image.asset('assets/icons/start@2x.png', width: 20, height: 20),
-        Icon(
-          Icons.star,
-          size: 20,
-          color: Colors.yellow.shade600,
+        const Image(
+          image: AssetImage('assets/icons/elements/star.webp'),
+          height: 20.0,
         ),
         const SizedBox(width: 8),
         Text(
           '${data.rarity}',
           style: const TextStyle(
-            color: Color(0xFF616161),
+            color: Color(0xFF101010),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -120,39 +105,25 @@ class CharsCard2 extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(6)),
-            color: _elementColor(data.vision).withOpacity(0.5),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Text(
-            '${data.vision}',
-            style: const TextStyle(
-              color: Color(0xFF35383F),
-              fontWeight: FontWeight.w500,
-              fontSize: 10,
+          padding: const EdgeInsets.all(0),
+          child: Row(children: [
+            Image(
+              image: AssetImage(
+                  'assets/icons/elements/${data.vision?.toLowerCase()}.webp'),
+              height: 20.0,
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(
+              '${data.vision}',
+              style: const TextStyle(
+                color: Color(0xFF35383F),
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+          ]),
         ),
       ],
     );
-  }
-
-  Color _elementColor(String? vision) {
-    return vision == "Anemo"
-        ? Colors.greenAccent
-        : vision == "Dendro"
-            ? Colors.green
-            : vision == "Hydro"
-                ? Colors.lightBlueAccent
-                : vision == "Geo"
-                    ? Colors.amberAccent
-                    : vision == "Electro"
-                        ? Colors.purpleAccent
-                        : vision == "Pyro"
-                            ? Colors.redAccent
-                            : vision == "Cryo"
-                                ? Colors.cyanAccent
-                                : AppColor.secondTextColor;
   }
 }
