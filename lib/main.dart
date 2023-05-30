@@ -160,9 +160,7 @@ class _MyAppState extends State<MyApp> {
         theme: appTheme(),
         home: (Platform.isAndroid || Platform.isIOS)
             ? UpgradeAlert(
-                upgrader: Upgrader(
-                    appcastConfig: cfg,
-                    dialogStyle: UpgradeDialogStyle.cupertino),
+                upgrader: Upgrader(appcastConfig: cfg),
                 child: const HomeScreen())
             : const HomeScreen());
   }
