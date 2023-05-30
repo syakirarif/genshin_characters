@@ -10,7 +10,8 @@ class DataCodeService {
 
   final _collectionUsers = FirebaseFirestore.instance.collection('users');
 
-  Future markCodeAsClaimed({required String codeId, required String uid}) {
+  Future markCodeAsClaimed(
+      {required String codeId, required String uid, required String email}) {
     return _collectionUsers
         .doc(uid)
         .collection('redeemed_codes')
@@ -18,6 +19,7 @@ class DataCodeService {
         .set({
       'code_id': codeId,
       'uid': uid,
+      'email': email,
       'is_claimed': true,
       'created_at': DateTime.now().toIso8601String(),
       'updated_at': FieldValue.serverTimestamp(),

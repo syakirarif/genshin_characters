@@ -441,8 +441,8 @@ class _CodeScreenMainState extends State<CodeScreenMain>
             child: const Text('Maybe later')),
         TextButton(
             onPressed: () async {
-              await DataCodeService()
-                  .markCodeAsClaimed(codeId: data.codeId!, uid: user!.uid);
+              await DataCodeService().markCodeAsClaimed(
+                  codeId: data.codeId!, uid: user!.uid, email: user!.email!);
               if (context.mounted) Navigator.of(context).pop();
             },
             child: const Text('Yes, I claimed it')),
