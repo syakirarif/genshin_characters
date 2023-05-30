@@ -6,10 +6,8 @@
         </title>
         <item>
             <title>Version 2.1.1</title>
-            <description>Added features:\n- Genshin Codes (info and redeem every single redemption
-                codes)\n- HoYoLAB Daily Check-in page
-            </description>
-            <pubDate>Tue, 30 May 2023 12:00:00 +0700</pubDate>
+            <description>New features and bug fix</description>
+            <pubDate>Tue, 30 May 2023 19:00:00 +0700</pubDate>
             <enclosure
                 url="https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters"
                 sparkle:os="android" sparkle:version="2.1.1" />

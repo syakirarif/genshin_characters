@@ -6,7 +6,7 @@ class AppColor {
 
   //Text Colors
   static Color mainTextColor = const Color(0xFF232323);
-  static Color secondTextColor = const Color(0xFFCBC8CD);
+  static Color secondTextColor = const Color(0xFFBCBABD);
 
   static Color peachButtonColor = const Color(0xFFFEB25E);
 
