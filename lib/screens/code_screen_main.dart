@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:genshin_characters/model/code_claimed_model.dart';
 import 'package:genshin_characters/model/code_model.dart';
 import 'package:genshin_characters/screens/setting_screen.dart';
@@ -31,6 +32,8 @@ class _CodeScreenMainState extends State<CodeScreenMain>
   int maxFailedLoadAttempts = 3;
 
   bool isAdInterstitialLoaded = false;
+
+  // bool _notificationsGranted = false;
 
   late User? user;
 
@@ -97,8 +100,48 @@ class _CodeScreenMainState extends State<CodeScreenMain>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _createInterstitialAd();
+    _checkPermission();
     _checkSubscription();
     super.initState();
+  }
+
+  Future<void> _requestPermission() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? granted = await androidImplementation?.requestPermission();
+      // setState(() {
+      //   _notificationsGranted = granted ?? false;
+      // });
+    }
+  }
+
+  Future<void> _checkPermission() async {
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.getNotificationSettings();
+
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      await _requestPermission();
+    }
   }
 
   Future<void> _checkSubscription() async {
