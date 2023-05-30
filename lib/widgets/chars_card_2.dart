@@ -37,7 +37,10 @@ class CharsCard2 extends StatelessWidget {
                   height: 162,
                   imageUrl: data.imagePortrait ?? '',
                   imageBuilder: (context, imageProvider) => Container(
+                    width: 162,
+                    height: 162,
                     decoration: BoxDecoration(
+                      borderRadius: borderRadius,
                       image: DecorationImage(
                         image: imageProvider,
                         fit: BoxFit.scaleDown,
