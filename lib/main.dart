@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     const appcastURL =
-        'https://raw.githubusercontent.com/syakirarif/genshin_characters/appcast/appcast.xml';
+        'https://raw.githubusercontent.com/syakirarif/genshin_characters/develop/appcast/appcast.xml';
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
 
     return MaterialApp(
