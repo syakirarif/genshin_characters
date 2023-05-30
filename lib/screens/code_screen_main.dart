@@ -40,7 +40,7 @@ class _CodeScreenMainState extends State<CodeScreenMain>
 
   void _createInterstitialAd() async {
     await InterstitialAd.load(
-      adUnitId: constants_key.adUnitIdBannerCodesInterstitial,
+      adUnitId: constants_key.adUnitIdInterstitialCodes,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {

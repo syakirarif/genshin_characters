@@ -78,7 +78,7 @@ class _WebViewScreenState extends State<WebViewScreen>
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerWebView,
+      adUnitId: constants_key.adUnitIdBannerWebview,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

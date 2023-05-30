@@ -33,7 +33,7 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCodesBanner,
+      adUnitId: constants_key.adUnitIdBannerCodes,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

@@ -226,7 +226,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerSettingsBanner,
+      adUnitId: constants_key.adUnitIdBannerSettings,
       size: AdSize.largeBanner,
       request: const AdRequest(),
       listener: BannerAdListener(

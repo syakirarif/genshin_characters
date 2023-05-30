@@ -34,7 +34,7 @@ class _CodeScreenFullState extends State<CodeScreenFull>
 
   BannerAd _initBannerAd() {
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCodesBanner,
+      adUnitId: constants_key.adUnitIdBannerCodes,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

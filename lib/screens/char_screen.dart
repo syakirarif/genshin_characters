@@ -397,7 +397,7 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   void _createInterstitialAd() async {
     await InterstitialAd.load(
-      adUnitId: constants_key.adUnitIdBannerCharsInterstitial,
+      adUnitId: constants_key.adUnitIdInterstitialChars,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
