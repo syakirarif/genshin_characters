@@ -147,12 +147,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    const appcastURL =
+        'https://raw.githubusercontent.com/syakirarif/genshin_characters/appcast/appcast.xml';
+    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: appTheme(),
         home: (Platform.isAndroid || Platform.isIOS)
             ? UpgradeAlert(
-                upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino),
+                upgrader: Upgrader(
+                    appcastConfig: cfg,
+                    dialogStyle: UpgradeDialogStyle.cupertino),
                 child: const HomeScreen())
             : const HomeScreen());
   }
