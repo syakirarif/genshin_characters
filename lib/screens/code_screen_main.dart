@@ -14,6 +14,7 @@ import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/utils/functions.dart';
 import 'package:genshin_characters/widgets/item_code.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CodeScreenMain extends StatefulWidget {
@@ -305,11 +306,14 @@ class _CodeScreenMainState extends State<CodeScreenMain>
                       ),
                     ),
                   ),
-                  TextButton(
+                  IconButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        _shareCode(data);
                       },
-                      child: const Text('Close'))
+                      icon: const Icon(
+                        Icons.share_rounded,
+                        color: Colors.purple,
+                      )),
                 ])),
         Padding(
           padding: const EdgeInsets.only(top: 20.0),
@@ -339,6 +343,12 @@ class _CodeScreenMainState extends State<CodeScreenMain>
         )
       ],
     );
+  }
+
+  void _shareCode(CodeModel data) {
+    String sentence2 =
+        'Hurry claim this ${data.gameName} redemption code!\n\nCode: ${data.code}\nRewards: ${data.codeDetail}\n\nInstall ${constants_key.appName} app and enjoy realtime redemption code information and faster redemption process!';
+    Share.share(sentence2, subject: 'New ${data.gameName} Redemption Code!');
   }
 
   Widget codeDetailsWidget(String firstTitle, String firstDesc) {

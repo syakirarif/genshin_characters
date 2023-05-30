@@ -70,16 +70,14 @@ class _SettingScreenState extends State<SettingScreen> {
 
   late BannerAd bannerAd;
 
-  get datasLoggedIn =>
-      <ProfileOption>[
+  get datasLoggedIn => <ProfileOption>[
         _permissionOption(),
         _redeemNotif(),
         _shareApp(),
         _buttonLogout(),
       ];
 
-  get datasNotLoggedIn =>
-      <ProfileOption>[
+  get datasNotLoggedIn => <ProfileOption>[
         _permissionOption(),
         _redeemNotif(),
         _shareApp(),
@@ -167,12 +165,13 @@ class _SettingScreenState extends State<SettingScreen> {
       });
 
   _shareApp() => ProfileOption.arrow(
-      title: 'Share This App',
+      title: 'Invite other to use ${constants_key.appName}',
       icon: _profileIcon('user@2x.png'),
       onClick: () {
         const String sentence2 =
-            'Hey Travelers, never miss out to claim redemption codes anymore. Install Genshin Redeemz app now!\n\nCheckout on Google Play Store: https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters';
-        Share.share(sentence2, subject: 'I like Genshin Redeemz app!');
+            'Hey Travelers, never forget to daily check-in and never miss out claiming redemption codes anymore. Install ${constants_key.appName} app now!\n\nCheckout on Google Play Store: https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters';
+        Share.share(sentence2,
+            subject: 'I recommend ${constants_key.appName} app!');
       });
 
   _buttonLogout() => ProfileOption.arrow(
