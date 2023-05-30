@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as root_bundle;
-import 'package:genshin_characters/chars_detail.dart';
 import 'package:genshin_characters/model/char_model.dart';
 import 'package:genshin_characters/model/item_filter_model.dart';
+import 'package:genshin_characters/screens/char_detail_screen.dart';
 import 'package:genshin_characters/utils/colors.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/widgets/chars_card_2.dart';
@@ -529,22 +529,8 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
   void moveToCharsDetailPage(int index) {
     // Navigator.pop(context);
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => CharsDetail(
-            name: _filteredList[index].name.toString(),
-            vision: _filteredList[index].vision.toString(),
-            weapon: _filteredList[index].weapon.toString(),
-            nation: _filteredList[index].nation.toString(),
-            affiliation: _filteredList[index].affiliation.toString(),
-            rarity: _filteredList[index].rarity!,
-            constellation: _filteredList[index].constellation.toString(),
-            birthday: _filteredList[index].birthday.toString(),
-            description: _filteredList[index].description.toString(),
-            obtain: _filteredList[index].obtain.toString(),
-            gender: _filteredList[index].gender.toString(),
-            imagePortrait: _filteredList[index].imagePortrait.toString(),
-            imageCard: _filteredList[index].imageCard.toString(),
-            imageWish: _filteredList[index].imageWish.toString(),
-            title: _filteredList[index].title.toString(),
+        builder: (context) => CharDetailScreen(
+            charModel: _filteredList[index],
             backgroundColor: _filteredList[index].rarity == 5
                 ? AppColor.rarity5
                 : AppColor.rarity4)));

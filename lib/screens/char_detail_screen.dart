@@ -2,55 +2,27 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:genshin_characters/model/char_model.dart';
 import 'package:genshin_characters/utils/constants.dart' as constants;
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'utils/colors.dart';
+import '../utils/colors.dart';
 
-class CharsDetail extends StatefulWidget {
-  const CharsDetail(
-      {Key? key,
-      required this.name,
-      required this.vision,
-      required this.weapon,
-      required this.nation,
-      required this.affiliation,
-      required this.rarity,
-      required this.constellation,
-      required this.birthday,
-      required this.description,
-      required this.obtain,
-      required this.gender,
-      required this.imagePortrait,
-      required this.imageCard,
-      required this.imageWish,
-      required this.title,
-      required this.backgroundColor})
+class CharDetailScreen extends StatefulWidget {
+  const CharDetailScreen(
+      {Key? key, required this.charModel, required this.backgroundColor})
       : super(key: key);
 
-  final String name;
-  final String vision;
-  final String weapon;
-  final String nation;
-  final String affiliation;
-  final int rarity;
-  final String constellation;
-  final String birthday;
-  final String description;
-  final String obtain;
-  final String gender;
-  final String imagePortrait;
-  final String imageCard;
-  final String imageWish;
-  final String title;
   final Color backgroundColor;
+
+  final CharModel charModel;
 
   @override
   State<StatefulWidget> createState() => _CharsDetail();
 }
 
-class _CharsDetail extends State<CharsDetail> {
+class _CharsDetail extends State<CharDetailScreen> {
   bool isAdBannerSuccess = false;
 
   @override
@@ -114,7 +86,7 @@ class _CharsDetail extends State<CharsDetail> {
 
     String imgRarity = "";
 
-    if (widget.rarity == 5) {
+    if (widget.charModel.rarity == 5) {
       imgRarity = constants.imgRarity5;
     } else {
       imgRarity = constants.imgRarity4;
@@ -135,7 +107,7 @@ class _CharsDetail extends State<CharsDetail> {
                       child: Center(
                         child: CachedNetworkImage(
                           height: MediaQuery.of(context).size.height * 0.4,
-                          imageUrl: widget.imageWish,
+                          imageUrl: widget.charModel.imageWish ?? '',
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -225,7 +197,7 @@ class _CharsDetail extends State<CharsDetail> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              widget.name,
+                              widget.charModel.name ?? '',
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 fontSize: 28.0,
@@ -235,7 +207,7 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             CachedNetworkImage(
                               width: 90.0,
@@ -243,13 +215,13 @@ class _CharsDetail extends State<CharsDetail> {
                               imageUrl: imgRarity,
                               imageBuilder: (context, imageProvider) =>
                                   Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.scaleDown,
-                                      ),
-                                    ),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.scaleDown,
                                   ),
+                                ),
+                              ),
                               placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
@@ -262,10 +234,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              widget.gender,
+                              widget.charModel.gender ?? '',
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 fontSize: 16.0,
@@ -274,10 +246,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Birthday: ${widget.birthday}",
+                              "Birthday: ${widget.charModel.birthday}",
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 fontSize: 16.0,
@@ -286,10 +258,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Constellation: ${widget.constellation}",
+                              "Constellation: ${widget.charModel.constellation}",
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 fontSize: 16.0,
@@ -298,10 +270,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              "Title: ${widget.title}",
+                              "Title: ${widget.charModel.title}",
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 fontSize: 16.0,
@@ -318,30 +290,13 @@ class _CharsDetail extends State<CharsDetail> {
                                   width: 100.0,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                      color: widget.vision == "Anemo"
-                                          ? Colors.greenAccent
-                                          : widget.vision == "Dendro"
-                                          ? Colors.green
-                                          : widget.vision == "Hydro"
-                                          ? Colors.lightBlueAccent
-                                          : widget.vision == "Geo"
-                                          ? Colors.amberAccent
-                                          : widget.vision ==
-                                          "Electro"
-                                                          ? Colors.purpleAccent
-                                                          : widget.vision ==
-                                                                  "Pyro"
-                                                              ? Colors.redAccent
-                                                              : widget.vision ==
-                                                                      "Cryo"
-                                                                  ? Colors
-                                                                      .cyanAccent
-                                                                  : AppColor
-                                                                      .secondTextColor,
+                                      color:
+                                          _elementColor(widget.charModel.vision)
+                                              .withOpacity(0.5),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: Text(
-                                    widget.vision,
+                                    widget.charModel.vision ?? '',
                                     style: const TextStyle(
                                       fontFamily: 'Urbanist',
                                       fontSize: 18.0,
@@ -363,7 +318,7 @@ class _CharsDetail extends State<CharsDetail> {
                                       ),
                                     ),
                                     Text(
-                                      widget.nation,
+                                      widget.charModel.nation ?? '',
                                       style: const TextStyle(
                                         fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.bold,
@@ -388,10 +343,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              widget.description,
+                              widget.charModel.description ?? '',
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 height: 1.4,
@@ -413,10 +368,10 @@ class _CharsDetail extends State<CharsDetail> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
-                              widget.obtain,
+                              widget.charModel.obtain ?? '',
                               style: TextStyle(
                                 fontFamily: 'Urbanist',
                                 height: 1.4,
@@ -438,5 +393,23 @@ class _CharsDetail extends State<CharsDetail> {
         bottomNavigationBar: isAdBannerSuccess ? adContainer : null,
       ),
     );
+  }
+
+  Color _elementColor(String? vision) {
+    return vision == "Anemo"
+        ? Colors.greenAccent
+        : vision == "Dendro"
+            ? Colors.green
+            : vision == "Hydro"
+                ? Colors.lightBlueAccent
+                : vision == "Geo"
+                    ? Colors.amberAccent
+                    : vision == "Electro"
+                        ? Colors.purpleAccent
+                        : vision == "Pyro"
+                            ? Colors.redAccent
+                            : vision == "Cryo"
+                                ? Colors.cyanAccent
+                                : AppColor.secondTextColor;
   }
 }
