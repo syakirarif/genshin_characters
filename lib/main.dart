@@ -22,10 +22,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       "Handling a background message: ${message.messageId} | title: ${message.notification?.title} | body: ${message.notification?.body}");
 }
 
+String appcastURL = '';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kDebugMode) {
+    appcastURL =
+        'https://raw.githubusercontent.com/syakirarif/genshin_characters/develop/appcast/appcast.xml';
     if (Platform.isAndroid) {
       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
@@ -36,6 +40,8 @@ void main() async {
 
     await Upgrader.clearSavedSettings();
   } else {
+    appcastURL =
+        'https://raw.githubusercontent.com/syakirarif/genshin_characters/master/appcast/appcast.xml';
     MobileAds.instance.initialize();
   }
 
@@ -147,8 +153,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    const appcastURL =
-        'https://raw.githubusercontent.com/syakirarif/genshin_characters/develop/appcast/appcast.xml';
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
 
     return MaterialApp(
