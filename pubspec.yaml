@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.1.1
   share_plus: ^7.0.1
   flutter_inappwebview: ^5.7.2+3
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:
