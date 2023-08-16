@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
-        <title>Genshin Assistz - Characters, Redeem Codes, Daily Check-in | An assistance app for
-            every Travelers
+        <title>Genshin Assistz - Characters, Redeem Codes and Daily Check-in | An assistance app for
+            every Genshin Impact Travelers
         </title>
         <item>
-            <title>Version 2.1.1</title>
-            <description>New features and bug fix</description>
-            <pubDate>Tue, 30 May 2023 19:00:00 +0700</pubDate>
+            <title>Version 2.2.0</title>
+            <description>Added new characters: Lyney, Lynette and Freminet</description>
+            <pubDate>Wed, 16 August 2023 10:00:00 +0700</pubDate>
             <enclosure
                 url="https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters"
-                sparkle:os="android" sparkle:version="2.1.1" />
+                sparkle:os="android" sparkle:version="2.2.0" />
         </item>
     </channel>
 </rss>
