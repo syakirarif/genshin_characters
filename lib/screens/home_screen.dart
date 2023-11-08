@@ -15,12 +15,12 @@ import 'package:genshin_characters/utils/size_config.dart';
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_print
-  print('notification(${notificationResponse.id}) action tapped: '
+  debugPrint('notification(${notificationResponse.id}) action tapped: '
       '${notificationResponse.actionId} with'
       ' payload: ${notificationResponse.payload}');
   if (notificationResponse.input?.isNotEmpty ?? false) {
     // ignore: avoid_print
-    print(
+    debugPrint(
         'notification action tapped with input: ${notificationResponse.input}');
   }
 }
