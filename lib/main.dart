@@ -7,10 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:genshin_characters/getx/modules/home_binding.dart';
+import 'package:genshin_characters/getx/routes/app_pages.dart';
 import 'package:genshin_characters/model/received_notification.dart';
 import 'package:genshin_characters/screens/home_screen.dart';
 import 'package:genshin_characters/utils/firebase_options.dart';
 import 'package:genshin_characters/utils/theme.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -155,13 +158,15 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
 
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: appTheme(),
-        home: (Platform.isAndroid || Platform.isIOS)
-            ? UpgradeAlert(
-                upgrader: Upgrader(appcastConfig: cfg),
-                child: const HomeScreen())
-            : const HomeScreen());
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(),
+      home: (Platform.isAndroid || Platform.isIOS)
+          ? UpgradeAlert(
+              upgrader: Upgrader(appcastConfig: cfg), child: const HomeScreen())
+          : const HomeScreen(),
+      getPages: AppPages.pages,
+      initialBinding: HomeBinding(),
+    );
   }
 }

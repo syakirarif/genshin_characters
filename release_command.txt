@@ -1,0 +1,1 @@
+flutter build appbundle --release --shrink --obfuscate --split-debug-info=./genshin_characters/debug

@@ -10,6 +10,7 @@ import 'package:genshin_characters/utils/colors.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
 import 'package:genshin_characters/widgets/char_card.dart';
 import 'package:genshin_characters/widgets/filter_category.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class CharScreen extends StatefulWidget {
@@ -359,12 +360,18 @@ class _CharScreen extends State<CharScreen> with WidgetsBindingObserver {
 
   void moveToCharsDetailPage(int index) {
     // Navigator.pop(context);
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => CharDetailScreen(
-            charModel: _filteredList[index],
-            backgroundColor: _filteredList[index].rarity == 5
-                ? AppColor.rarity5
-                : AppColor.rarity4)));
+    // Navigator.of(context).push(MaterialPageRoute(
+    //     builder: (context) => CharDetailScreen(
+    //         charModel: _filteredList[index],
+    //         backgroundColor: _filteredList[index].rarity == 5
+    //             ? AppColor.rarity5
+    //             : AppColor.rarity4)));
+    Get.to(CharDetailScreen(
+        charModel: _filteredList[index],
+        backgroundColor: _filteredList[index].rarity == 5
+            ? AppColor.rarity5
+            : AppColor.rarity4));
+    // Get.toNamed(AppRoutes.charDetail);
   }
 
   void _showInterstitialAd(int index) {
