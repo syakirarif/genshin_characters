@@ -24,6 +24,8 @@ class _WebViewScreenState extends State<WebViewScreen>
   String url = '';
   String webUrlSecurityDone =
       'https://account.hoyoverse.com/security.html?complete=1';
+  String webUrlSecurityDone2 =
+      'https://account.hoyoverse.com/single-page/cross-login.html?complete=1';
 
   double progress = 0.0;
 
@@ -189,7 +191,8 @@ class _WebViewScreenState extends State<WebViewScreen>
                       debugPrint('onLoadStop: $url');
                       pullToRefreshController.endRefreshing();
 
-                      if (url.toString() == webUrlSecurityDone) {
+                      if (url.toString() == webUrlSecurityDone ||
+                          url.toString() == webUrlSecurityDone2) {
                         webViewController?.goBack();
                       }
                       // setState(() {
