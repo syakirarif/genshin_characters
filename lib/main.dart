@@ -39,7 +39,10 @@ void main() async {
 
     // For AdMobs test purpose
     MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
-        testDeviceIds: ['6B48649ED223FA9B879ED48941A6D133']));
+        testDeviceIds: [
+          '6B48649ED223FA9B879ED48941A6D133',
+          '29EF32D2E4EBD3A013A7A2EBEEA0627F'
+        ]));
 
     await Upgrader.clearSavedSettings();
   } else {
