@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:genshin_characters/utils/constants_key.dart' as constants_key;
@@ -79,8 +80,12 @@ class _WebViewScreenState extends State<WebViewScreen>
   }
 
   BannerAd _initBannerAd() {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerWebview;
+
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerWebview,
+      adUnitId: adUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

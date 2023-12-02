@@ -39,8 +39,12 @@ class _CodeScreenMainState extends State<CodeScreenMain>
   late User? user;
 
   void _createInterstitialAd() async {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdInterstitialTestAndroid
+        : constants_key.adUnitIdInterstitialCodes;
+
     await InterstitialAd.load(
-      adUnitId: constants_key.adUnitIdInterstitialCodes,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {

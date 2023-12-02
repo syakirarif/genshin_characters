@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/screens/code_screen_main.dart';
@@ -33,8 +34,12 @@ class _CodeScreenFullState extends State<CodeScreenFull>
   }
 
   BannerAd _initBannerAd() {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerCodes;
+
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCodes,
+      adUnitId: adUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -106,7 +111,7 @@ class _CodeScreenFullState extends State<CodeScreenFull>
         }, context, title: 'Genshin Codes'),
         body: const CodeScreenMain(),
         bottomNavigationBar:
-            isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
+        isAdBannerLoaded ? _createBannerAd(bannerAd) : null,
       ),
     );
   }

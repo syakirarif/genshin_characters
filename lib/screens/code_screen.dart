@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:genshin_characters/components/app_bar.dart';
 import 'package:genshin_characters/screens/code_screen_main.dart';
@@ -32,8 +33,12 @@ class _CodeScreenState extends State<CodeScreen> with WidgetsBindingObserver {
   }
 
   BannerAd _initBannerAd() {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerCodes;
+
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCodes,
+      adUnitId: adUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

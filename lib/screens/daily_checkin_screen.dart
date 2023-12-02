@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:genshin_characters/components/app_bar.dart';
@@ -76,8 +77,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen>
   }
 
   BannerAd _initBannerAd() {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerCheckin;
+
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerCheckin,
+      adUnitId: adUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,9 +55,13 @@ class _CharsDetail extends State<CharDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerCharsDetail;
+
     final BannerAd myBanner = BannerAd(
       // adUnitId: adUnitIdBanner,
-      adUnitId: constants_key.adUnitIdBannerCharsDetail,
+      adUnitId: adUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -231,21 +236,21 @@ class _CharsDetail extends State<CharDetailScreen> {
                                   imageUrl: imgRarity,
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.scaleDown,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
                                   placeholder: (context, url) => const Center(
                                     child: CircularProgressIndicator(
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white)),
+                                        AlwaysStoppedAnimation<Color>(
+                                            Colors.white)),
                                   ),
                                   errorWidget: (context, url, error) =>
-                                      const Image(
+                                  const Image(
                                     image: AssetImage(
                                         'assets/img_placeholder.png'),
                                     fit: BoxFit.scaleDown,
@@ -287,7 +292,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text('Birthday',
                                           style: _textStyleTitle()),
@@ -302,7 +307,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text('Nation', style: _textStyleTitle()),
                                       const SizedBox(
@@ -323,7 +328,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text('Title', style: _textStyleTitle()),
                                       const SizedBox(
@@ -337,7 +342,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text('Constellation',
                                           style: _textStyleTitle()),
@@ -365,7 +370,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.charModel.description ?? '',
@@ -390,7 +395,7 @@ class _CharsDetail extends State<CharDetailScreen> {
                             ),
                             SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.006,
+                                  MediaQuery.of(context).size.height * 0.006,
                             ),
                             Text(
                               widget.charModel.obtain ?? '',

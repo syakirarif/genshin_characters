@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:genshin_characters/components/app_bar.dart';
@@ -225,8 +226,12 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   BannerAd _initBannerAd() {
+    String adUnitId = kDebugMode
+        ? constants_key.adUnitIdBannerTestAndroid
+        : constants_key.adUnitIdBannerSettings;
+
     return BannerAd(
-      adUnitId: constants_key.adUnitIdBannerSettings,
+      adUnitId: adUnitId,
       size: AdSize.largeBanner,
       request: const AdRequest(),
       listener: BannerAdListener(
