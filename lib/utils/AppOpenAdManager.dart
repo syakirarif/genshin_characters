@@ -12,7 +12,20 @@ class AppOpenAdManager {
 
   /// Load an AppOpenAd.
   void loadAd() {
-    // We will implement this below.
+    AppOpenAd.load(
+      adUnitId: adUnitId,
+      orientation: AppOpenAd.orientationPortrait,
+      request: AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          _appOpenAd = ad;
+        },
+        onAdFailedToLoad: (error) {
+          print('AppOpenAd failed to load: $error');
+          // Handle the error.
+        },
+      ),
+    );
   }
 
   /// Whether an ad is available to be shown.
