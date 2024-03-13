@@ -5,12 +5,12 @@
             every Genshin Impact Travelers
         </title>
         <item>
-            <title>Version 2.5.0</title>
-            <description>Updated characters: Xianyun and Gaming</description>
-            <pubDate>Sun, 11th of February 2024 10:00:00 +0700</pubDate>
+            <title>Version 2.6.0</title>
+            <description>Updated character: Chiori</description>
+            <pubDate>Wed, 13th of March 2024 10:00:00 +0700</pubDate>
             <enclosure
                 url="https://play.google.com/store/apps/details?id=com.syakirarif.genshin_characters"
-                sparkle:os="android" sparkle:version="2.5.0" />
+                sparkle:os="android" sparkle:version="2.6.0" />
         </item>
     </channel>
 </rss>
